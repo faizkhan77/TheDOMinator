@@ -1,0 +1,27 @@
+# General ignores
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# React (frontend) ignores
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Django (thedominator) ignores
+thedominator/__pycache__/
+thedominator/*.py[cod]
+thedominator/$py.class
+# thedominator/db.sqlite3
+thedominator/*.log
+# thedominator/static/
+# thedominator/media/
+thedominator/.env
+thedominator/env/
+
+# Python virtual environment
+env/
+
+# Miscellaneous
+*.swp
