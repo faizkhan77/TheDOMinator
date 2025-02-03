@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import LoggedinNav from "../components/LoggedinNav";
 
 const Teams = () => {
     const [teams, setTeams] = useState([]);
@@ -46,7 +47,10 @@ const Teams = () => {
     return (
         <>
             {/* Sidebar Component */}
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            <div className="hidden md:flex">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+            <LoggedinNav/>
 
             <div
                 className={`px-8 py-6 transition-all duration-300`}
@@ -75,7 +79,10 @@ const Teams = () => {
 
                 {/* Display Teams */}
                 {filteredTeams.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto"
+                        style={{ maxHeight: '70vh' }} // Adjust the height as needed
+                    >
                         {filteredTeams.map((team) => (
                             <div
                                 key={team.id}

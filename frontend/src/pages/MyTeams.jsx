@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import LoggedinNav from "../components/LoggedinNav";
 
 const MyTeams = () => {
     const [teams, setTeams] = useState([]);
     const [searchQuery, setSearchQuery] = useState(""); // ✅ State for search input
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar visibility state
 
     useEffect(() => {
         getTeams();
@@ -40,8 +42,6 @@ const MyTeams = () => {
             team.looking_for.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to track sidebar visibility
-
     // Function to toggle the sidebar visibility
     const toggleSidebar = () => {
         setIsSidebarOpen(prevState => !prevState);
@@ -50,13 +50,18 @@ const MyTeams = () => {
     return (
         <>
             {/* Sidebar Component */}
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            <div className="md:flex hidden">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+            <LoggedinNav />         
 
             <div
-                className={`px-8 py-6 transition-all duration-300`}
+                className={`lg:px-8 px-4 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : ""}`}
                 style={{
-                    marginLeft: isSidebarOpen ? "20%" : "10%", // Adjust margin-left based on sidebar state
-                    transition: "margin-left 0.3s ease" // Smooth transition for the shift
+                    marginLeft: isSidebarOpen ? "20%" : "0", // Adjust margin-left based on sidebar state
+                    transition: "margin-left 0.3s ease", // Smooth transition for the shift
+                    maxHeight: "calc(100vh - 100px)", // Allow for scroll if content exceeds height
+                    overflowY: "auto" // Enable vertical scrolling
                 }}
             >
                 <h2 className="text-3xl font-semibold text-white mb-6">My Teams</h2>
@@ -72,7 +77,7 @@ const MyTeams = () => {
 
                 {/* Display My Teams */}
                 {filteredTeams.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto">
                         {filteredTeams.map((team) => (
                             <div
                                 key={team.id}

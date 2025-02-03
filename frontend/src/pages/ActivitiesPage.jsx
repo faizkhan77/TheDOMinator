@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns"; // Ensure you have date-fns installed
+import LoggedinNav from "../components/LoggedinNav";
 
 const ActivitiesPage = () => {
     const [activities, setActivities] = useState([]);
@@ -32,8 +33,14 @@ const ActivitiesPage = () => {
     return (
         <>
             {/* Sidebar Component */}
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
+           
+            <div className=" hidden md:block">
+        <Sidebar className="" toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+           <div className="h-full">
+           <LoggedinNav/>
+           </div>
             <div
                 className={`px-8 py-6 transition-all duration-300`}
                 style={{

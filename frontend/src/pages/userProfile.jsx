@@ -5,6 +5,7 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import { FaGithub, FaFacebook, FaInstagram, FaLinkedin, FaGlobe } from "react-icons/fa"; // Import icons
+import LoggedinNav from "../components/LoggedinNav";
 
 const UserProfile = () => {
     const [user, setUser] = useState(null)
@@ -56,13 +57,17 @@ const UserProfile = () => {
 
     return (
         <>
-            {/* Sidebar with toggle functionality */}
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+              <div className="hidden md:flex">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+<div>
+<LoggedinNav />
+</div>
 
             <div
-                className={`p-8 to-black min-h-screen transition-all duration-300`}
+                className={`p-8 to-black min-h-screen transition-all duration-300 ${isSidebarOpen ? "margin-left 0.3s ease md:ml-[20%]" : "md:ml-[5%]"}`}
                 style={{
-                    marginLeft: isSidebarOpen ? "20%" : "10%",
+                    // marginLeft: isSidebarOpen ? "20%" : "10%",
                     transition: "margin-left 0.3s ease",
                 }}
             >

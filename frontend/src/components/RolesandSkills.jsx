@@ -23,55 +23,42 @@ const RolesandSkills = ({ setSearchQuery }) => {
     const [selectedCategory, setSelectedCategory] = useState("roles");
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-8 shadow-2xl w-full max-w-3xl mx-auto">
-            <div className="flex justify-center mb-4">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 shadow-2xl w-full max-w-md sm:max-w-2xl mx-auto">
+            {/* Toggle Buttons */}
+            <div className="flex justify-center mb-3 sm:mb-4">
                 <button
                     onClick={() => setSelectedCategory("roles")}
-                    className={`px-6 py-2 rounded-full font-semibold text-white mr-4 transition-all duration-300 
+                    className={`px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold text-white mr-1.5 sm:mr-3 transition-all duration-300 
                                 ${selectedCategory === "roles" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
                 >
                     Roles
                 </button>
                 <button
                     onClick={() => setSelectedCategory("skills")}
-                    className={`px-6 py-2 rounded-full font-semibold text-white transition-all duration-300 
+                    className={`px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold text-white transition-all duration-300 
                                 ${selectedCategory === "skills" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
                 >
                     Skills
                 </button>
             </div>
 
-            {selectedCategory === "roles" ? (
-                <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-50 text-center">Select a Role</h4>
-                    <div className="flex flex-wrap justify-center">
-                        {roles.map((role) => (
-                            <button
-                                key={role}
-                                onClick={() => setSearchQuery(role)}
-                                className="bg-gray-800 text-gray-50 py-2 px-4 rounded-full mx-2 my-1 hover:bg-gray-700 transition-all duration-300"
-                            >
-                                {role}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-50 text-center">Select a Skill</h4>
-                    <div className="flex flex-wrap justify-center">
-                        {skills.map((skill) => (
-                            <button
-                                key={skill}
-                                onClick={() => setSearchQuery(skill)}
-                                className="bg-gray-800 text-gray-50 py-2 px-4 rounded-full mx-2 my-1 hover:bg-gray-700 transition-all duration-300"
-                            >
-                                {skill}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* Title */}
+            <h4 className="text-sm sm:text-lg font-semibold text-gray-50 text-center mb-2 sm:mb-3">
+                {selectedCategory === "roles" ? "Select a Role" : "Select a Skill"}
+            </h4>
+
+            {/* Role/Skill Buttons */}
+            <div className="flex flex-wrap justify-center max-h-80 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 p-2">
+                {(selectedCategory === "roles" ? roles : skills).map((item) => (
+                    <button
+                        key={item}
+                        onClick={() => setSearchQuery(item)}
+                        className="bg-gray-800 text-gray-50 text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 rounded-full mx-1 sm:mx-2 my-1 hover:bg-gray-700 transition-all duration-300"
+                    >
+                        {item}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };

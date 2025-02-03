@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import LoggedinNav from "../components/LoggedinNav";
 
 const TeamEdit = () => {
     const location = useLocation();
@@ -112,17 +113,16 @@ const TeamEdit = () => {
 
     return (
         <>
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            <div className="hidden md:flex">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+            <LoggedinNav/>
 
             <div
-                className="min-h-screen flex items-center justify-center p-4 transition-all duration-300"
-                style={{
-                    marginLeft: isSidebarOpen ? "20%" : "10%",
-                    transition: "margin-left 0.3s ease",
-                }}
+               className="min-h-screen flex items-center justify-center p-4 transition-all duration-300 lg:ml-[20%] md:ml-[10%]"
             >
-                <div className="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-lg text-gray-200">
-                    <h1 className="text-3xl font-bold mb-6 text-center">
+                <div className="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-lg sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-2xl text-gray-200">
+                    <h1 className="text-3xl font-bold mb-6 text-center text-lg sm:text-2xl md:text-3xl">
                         {team ? "Edit Team" : "Create Team"}
                     </h1>
                     <form onSubmit={handleSubmit} className="space-y-6">

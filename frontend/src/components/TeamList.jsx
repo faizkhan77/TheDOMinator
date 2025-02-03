@@ -33,28 +33,28 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
     );
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-8 shadow-2xl w-full max-w-3xl mx-auto">
-            <h3 className="text-2xl font-semibold text-gray-50 mb-4 text-center">All Teams</h3>
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl mx-auto">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-50 mb-4 text-center">All Teams</h3>
 
             <input
                 type="text"
                 placeholder="Search teams..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full p-3 rounded-lg mb-6 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+                className="w-full p-2 sm:p-3 rounded-full text-sm sm:text-base text-gray-50 bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
             />
 
             {filteredTeams.length > 0 ? (
-                <ul className="space-y-4">
+                <ul className="mt-4 max-h-60 sm:max-h-72 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 space-y-3 sm:space-y-4">
                     {filteredTeams.map((team) => (
-                        <li key={team.id} className="bg-gray-800 p-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-700 transition-all duration-300">
-                            <Link to={`/team/${team.id}`} state={{ team }} className="text-lg font-semibold text-gray-50">
+                        <li key={team.id} className="bg-gray-800 p-3 sm:p-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-700 transition-all duration-300">
+                            <Link to={`/team/${team.id}`} state={{ team }} className="text-sm sm:text-base font-semibold text-gray-50 block">
                                 {team.name} - Looking for: {team.looking_for || "Not specified"}
                             </Link>
                             {onSelectTeam && (
                                 <button
                                     onClick={() => onSelectTeam(team)}
-                                    className="mt-2 bg-indigo-500 text-white py-2 px-4 rounded-full hover:bg-indigo-400 transition-all duration-300"
+                                    className="mt-2 bg-indigo-500 text-white text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 rounded-full hover:bg-indigo-400 transition-all duration-300"
                                 >
                                     Select
                                 </button>
@@ -63,7 +63,7 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-500 text-center">No teams found.</p>
+                <p className="text-gray-500 text-center mt-4 text-sm sm:text-base">No teams found.</p>
             )}
         </div>
     );
