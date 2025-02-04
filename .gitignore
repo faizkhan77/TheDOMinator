@@ -19,9 +19,12 @@ thedominator/*.log
 # thedominator/media/
 thedominator/.env
 thedominator/env/
+thedominator/.venv/
+thedominator/venv/
 
 # Python virtual environment
 env/
 
 # Miscellaneous
 *.swp
+
