@@ -7,7 +7,7 @@ import LoggedinNav from "../components/LoggedinNav";
 const MyTeams = () => {
     const [teams, setTeams] = useState([]);
     const [searchQuery, setSearchQuery] = useState(""); // ✅ State for search input
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar visibility state
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar visibility state
 
     useEffect(() => {
         getTeams();
@@ -56,11 +56,11 @@ const MyTeams = () => {
             <LoggedinNav />         
 
             <div
-                className={`lg:px-8 px-4 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : ""}`}
+                className={`lg:px-8 px-4 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : "md:ml-[10%]"}`}
                 style={{
-                    marginLeft: isSidebarOpen ? "20%" : "0", // Adjust margin-left based on sidebar state
-                    transition: "margin-left 0.3s ease", // Smooth transition for the shift
-                    maxHeight: "calc(100vh - 100px)", // Allow for scroll if content exceeds height
+                    // marginLeft: isSidebarOpen ? "20%" : "0", // Adjust margin-left based on sidebar state
+                    // transition: "margin-left 0.3s ease", // Smooth transition for the shift
+                    // maxHeight: "calc(100vh - 100px)", // Allow for scroll if content exceeds height
                     overflowY: "auto" // Enable vertical scrolling
                 }}
             >
