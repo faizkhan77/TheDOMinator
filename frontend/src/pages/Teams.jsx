@@ -50,14 +50,14 @@ const Teams = () => {
             <div className="hidden md:flex">
                 <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
             </div>
-            <LoggedinNav/>
+            <LoggedinNav />
 
             <div
-                className={`px-8 py-6 transition-all duration-300`}
-                style={{
-                    marginLeft: isSidebarOpen ? "20%" : "10%", // Adjust margin-left based on sidebar state
-                    transition: "margin-left 0.3s ease" // Smooth transition for the shift
-                }}
+                className={`px-8 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : "md:ml-[10%]"}`}
+            // style={{
+            //     marginLeft: isSidebarOpen ? "20%" : "10%", // Adjust margin-left based on sidebar state
+            //     transition: "margin-left 0.3s ease" // Smooth transition for the shift
+            // }}
             >
                 <h2 className="text-3xl font-semibold text-white mb-6">Teams</h2>
 

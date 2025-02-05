@@ -57,20 +57,14 @@ const UserProfile = () => {
 
     return (
         <>
-              <div className="hidden md:flex">
+            <div className="hidden md:flex">
                 <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
             </div>
-<div>
-<LoggedinNav />
-</div>
+            <div>
+                <LoggedinNav />
+            </div>
 
-            <div
-                className={`p-8 to-black min-h-screen transition-all duration-300 ${isSidebarOpen ? "margin-left 0.3s ease md:ml-[20%]" : "md:ml-[5%]"}`}
-                style={{
-                    // marginLeft: isSidebarOpen ? "20%" : "10%",
-                    transition: "margin-left 0.3s ease",
-                }}
-            >
+            <div className={`p-6 min-h-screen transition-all duration-300 max-w-6xl mx-auto ${isSidebarOpen ? "md:ml-[20%]" : "md:ml-[10%]"}`}>
                 {/* Breadcrumb */}
                 <nav className="text-sm mb-6">
                     <ol className="flex space-x-3 text-gray-300">
@@ -88,100 +82,87 @@ const UserProfile = () => {
                     </ol>
                 </nav>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Profile Card */}
-                    <div className="col-span-1">
-                        <div className="bg-gray-800 rounded-2xl shadow-lg p-6">
-                            <div className="flex flex-col items-center text-center">
-                                <img
-                                    src={profile?.avatar}
-                                    alt="User Avatar"
-                                    className="rounded-full w-48 border-4 border-purple-500 mb-4"
-                                />
-                                <div>
-                                    <h4 className="text-2xl font-semibold text-white">
-                                        {profile?.full_name}
-                                    </h4>
-                                    <p className="text-gray-400 text-lg">{profile?.role}</p>
-                                    <p className="text-gray-500 text-sm">{profile?.location}</p>
-                                </div>
+                    <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
+                        <div className="flex flex-col items-center text-center">
+                            <img
+                                src={profile?.avatar}
+                                alt="User Avatar"
+                                className="rounded-full w-36 md:w-48 border-4 border-purple-500 mb-4"
+                            />
+                            <h4 className="text-2xl font-semibold text-white">{profile?.full_name}</h4>
+                            <p className="text-gray-400 text-lg">{profile?.role}</p>
+                            <p className="text-gray-500 text-sm">{profile?.location}</p>
+                        </div>
+
+                        {/* Edit Button */}
+                        {loggedInUser?.id === profile?.user && (
+                            <div className="mt-4 text-center">
+                                <button
+                                    onClick={handleEditProfile}
+                                    className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
+                                >
+                                    Edit Profile
+                                </button>
                             </div>
-
-                            {/* Edit Button */}
-                            {loggedInUser?.id === profile?.user && (
-                                <div className="mt-4 text-center">
-                                    <button
-                                        onClick={handleEditProfile}
-                                        className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-                                    >
-                                        Edit Profile
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Social Links */}
-                        <div className="bg-gray-800 rounded-2xl shadow-lg mt-6 p-6">
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-gray-200">
-                                    <FaGlobe className="mr-3 text-blue-400 text-xl" />
-                                    <span className="text-gray-400">{profile?.website || "Not provided"}</span>
-                                </li>
-                                <li className="flex items-center text-gray-200">
-                                    <FaGithub className="mr-3 text-blue-500 text-xl" />
-                                    <span className="text-gray-400">{profile?.github || "Not provided"}</span>
-                                </li>
-                                {/* <li className="flex items-center text-gray-200">
-                                    <FaFacebook className="mr-3 text-blue-600 text-xl" />
-                                    <span className="text-gray-400">{profile?.facebook || "Not provided"}</span>
-                                </li> */}
-                                <li className="flex items-center text-gray-200">
-                                    <FaInstagram className="mr-3 text-pink-400 text-xl" />
-                                    <span className="text-gray-400">{profile?.instagram || "Not provided"}</span>
-                                </li>
-                                <li className="flex items-center text-gray-200">
-                                    <FaLinkedin className="mr-3 text-blue-700 text-xl" />
-                                    <span className="text-gray-400">{profile?.linkedin || "Not provided"}</span>
-                                </li>
-                            </ul>
-                        </div>
-
+                        )}
                     </div>
 
+
+
                     {/* Profile Details */}
-                    <div className="col-span-2">
-                        <div className="bg-gray-800 rounded-2xl shadow-lg p-6">
-                            <div className="space-y-6">
-                                <div className="flex justify-between">
-                                    <h6 className="text-gray-200 text-lg font-medium">Full Name</h6>
-                                    <p className="text-gray-400">{profile?.full_name}</p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <h6 className="text-gray-200 text-lg font-medium">Email</h6>
-                                    <p className="text-gray-400">{profile?.email}</p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <h6 className="text-gray-200 text-lg font-medium">Role</h6>
-                                    <p className="text-gray-400">{profile?.role}</p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <h6 className="text-gray-200 text-lg font-medium">Skills</h6>
-                                    <p className="text-gray-400">{profile?.skills}</p>
-                                </div>
+                    <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
+                        <h6 className="text-gray-200 text-lg font-semibold mb-4">Profile Details</h6>
+                        <div className="space-y-4">
+                            <div className="flex justify-between">
+                                <h6 className="text-gray-200">Full Name</h6>
+                                <p className="text-gray-400">{profile?.full_name}</p>
+                            </div>
+                            <div className="flex justify-between">
+                                <h6 className="text-gray-200">Email</h6>
+                                <p className="text-gray-400">{profile?.email}</p>
+                            </div>
+                            <div className="flex justify-between">
+                                <h6 className="text-gray-200">Role</h6>
+                                <p className="text-gray-400">{profile?.role}</p>
+                            </div>
+                            <div className="flex justify-between">
+                                <h6 className="text-gray-200">Skills</h6>
+                                <p className="text-gray-400">{profile?.skills}</p>
                             </div>
                         </div>
+                    </div>
 
-                        {/* New Section: Bio & Experience */}
-                        <div className="bg-gray-800 rounded-2xl shadow-lg p-6 mt-6 min-h-[345px]">
-                            <h6 className="text-gray-200 text-lg font-semibold mb-4">Bio & Experience</h6>
-                            <p className="text-gray-400 whitespace-pre-line">
-                                {profile?.bio || "No bio available"}
-                            </p>
-                            <h6 className="text-gray-200 text-lg font-semibold mt-4">Experience</h6>
-                            <p className="text-gray-400 whitespace-pre-line">
-                                {profile?.experience || "No experience details provided"}
-                            </p>
-                        </div>
+                    {/* Social Links */}
+                    <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
+                        <h6 className="text-gray-200 text-lg font-semibold mb-4">Social Links</h6>
+                        <ul className="space-y-4">
+                            <li className="flex items-center text-gray-200">
+                                <FaGlobe className="mr-3 text-blue-400 text-xl" />
+                                <span className="text-gray-400">{profile?.website || "Not provided"}</span>
+                            </li>
+                            <li className="flex items-center text-gray-200">
+                                <FaGithub className="mr-3 text-blue-500 text-xl" />
+                                <span className="text-gray-400">{profile?.github || "Not provided"}</span>
+                            </li>
+                            <li className="flex items-center text-gray-200">
+                                <FaInstagram className="mr-3 text-pink-400 text-xl" />
+                                <span className="text-gray-400">{profile?.instagram || "Not provided"}</span>
+                            </li>
+                            <li className="flex items-center text-gray-200">
+                                <FaLinkedin className="mr-3 text-blue-700 text-xl" />
+                                <span className="text-gray-400">{profile?.linkedin || "Not provided"}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Bio & Experience */}
+                    <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
+                        <h6 className="text-gray-200 text-lg font-semibold mb-4">Bio & Experience</h6>
+                        <p className="text-gray-400 whitespace-pre-line">{profile?.bio || "No bio available"}</p>
+                        <h6 className="text-gray-200 text-lg font-semibold mt-4">Experience</h6>
+                        <p className="text-gray-400 whitespace-pre-line">{profile?.experience || "No experience details provided"}</p>
                     </div>
                 </div>
             </div>

@@ -116,10 +116,12 @@ const TeamEdit = () => {
             <div className="hidden md:flex">
                 <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
             </div>
-            <LoggedinNav/>
+            <div>
+                <LoggedinNav />
+            </div>
 
             <div
-               className="min-h-screen flex items-center justify-center p-4 transition-all duration-300 lg:ml-[20%] md:ml-[10%]"
+                className="min-h-screen flex items-center justify-center p-4 transition-all duration-300 lg:ml-[20%] md:ml-[10%]"
             >
                 <div className="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-lg sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-2xl text-gray-200">
                     <h1 className="text-3xl font-bold mb-6 text-center text-lg sm:text-2xl md:text-3xl">

@@ -45,7 +45,8 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
             />
 
             {filteredTeams.length > 0 ? (
-                <ul className="mt-4 max-h-80 sm:max-h-90 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 space-y-3 sm:space-y-4">
+                <ul className="mt-4 h-96 sm:h-[25rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 space-y-3 sm:space-y-4">
+
                     {filteredTeams.map((team) => (
                         <li key={team.id} className="bg-gray-800 p-3 sm:p-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-700 transition-all duration-300">
                             <Link to={`/team/${team.id}`} state={{ team }} className="text-sm sm:text-base font-semibold text-gray-50 block">

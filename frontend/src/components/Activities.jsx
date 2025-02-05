@@ -15,7 +15,7 @@ const Activities = () => {
     }, []);
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl w-full max-w-3xl mx-auto mt-8">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl w-full max-w-3xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-50 mb-6 sm:mb-8 text-center">
                 Recent Activities
             </h2>

@@ -22,31 +22,34 @@ const LoggedinNav = () => {
 
     return (
         <nav className={`bg-[#1f1e24]  p-4 shadow-md md:hidden relative 
-        ${menuOpen ? "h-[40vh] absolute" : ""}` }>
+        ${menuOpen ? "h-[40vh] absolute" : ""}`}>
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <Link to="/loggedinhome" className="text-gray-50 text-xl font-bold flex items-center gap-2">
                     <i className="fab fa-codepen text-[#6556cd]"></i> TheDOMinator
                 </Link>
                 <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
-                    <i className={`${menuOpen ? "fas fa-times" : "fas fa-bars"} text-gray-50 text-2xl transition-transform duration-300`}></i>
+                    <i className={`${menuOpen ? "fas fa-times" : "fas fa-bars"} text-gray-50 text-2xl transition-transform duration-100`}></i>
                 </button>
             </div>
 
             {/* Mobile Menu */}
             <div
-                className={`absolute left-0 w-full bg-[#1f1e24] shadow-lg rounded-b-lg transition-all duration-300 overflow-hidden ${
-                    menuOpen ? "h-[40vh] opacity-100" : "h-0 opacity-0"
-                }`}
+                className={`absolute left-0 w-full bg-[#1f1e24] shadow-lg rounded-b-lg transition-all duration-300 overflow-hidden ${menuOpen ? "h-[40vh] opacity-100" : "h-0 opacity-0"
+                    }`}
             >
                 <div className="p-4 flex flex-col space-y-4">
                     {/* Profile Section */}
-                    <div className="flex items-center space-x-3 border-b border-gray-700 pb-3">
-                        <img src={profile?.avatar} alt="Avatar" className="w-12 h-12 rounded-full border-2 border-[#6556cd]" />
-                        <div>
-                            <p className="text-gray-50 font-medium">{profile ? profile.full_name : "Guest"}</p>
-                            <p className="text-gray-400 text-xs">{user?.email || "No email available"}</p>
+                    <Link id="nav-footer-title" to={`/user/${user?.id}`} rel="noopener noreferrer" style={{ fontSize: "15px" }}>
+
+                        <div className="flex items-center space-x-3 border-b border-gray-700 pb-3">
+                            <img src={profile?.avatar} alt="Avatar" className="w-12 h-12 rounded-full border-2 border-[#6556cd]" />
+                            <div>
+                                <p className="text-gray-50 font-medium">{profile ? profile.full_name : "Guest"}</p>
+                                <p className="text-gray-400 text-xs">{user?.email || "No email available"}</p>
+                            </div>
                         </div>
-                    </div>
+
+                    </Link>
 
                     {/* Navigation Links */}
                     <ul className="text-gray-50 space-y-2 text-lg">
