@@ -33,7 +33,7 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
     );
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl mx-auto">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl mx-auto md:h-[90vh]">
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-50 mb-4 text-center">All Teams</h3>
 
             <input
@@ -45,7 +45,7 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
             />
 
             {filteredTeams.length > 0 ? (
-                <ul className="mt-4 max-h-60 sm:max-h-72 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 space-y-3 sm:space-y-4">
+                <ul className="mt-4 max-h-80 sm:max-h-90 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 space-y-3 sm:space-y-4">
                     {filteredTeams.map((team) => (
                         <li key={team.id} className="bg-gray-800 p-3 sm:p-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-700 transition-all duration-300">
                             <Link to={`/team/${team.id}`} state={{ team }} className="text-sm sm:text-base font-semibold text-gray-50 block">
