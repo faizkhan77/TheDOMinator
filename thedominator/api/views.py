@@ -1,12 +1,14 @@
 from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
-from .models import UserProfile, Team, Room, Message
+from .models import UserProfile, Team, Room, Message, Invitation, UserSkill
 from .serializers import (
     UserSerializer,
     UserProfileSerializer,
     TeamSerializer,
     RoomSerializer,
     MessageSerializer,
+    InvitationSerializer,
+    UserSkillSerializer,
 )
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -17,6 +19,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 
 @api_view(["POST"])
@@ -100,6 +107,85 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         print("Response Data:", response.data)  # Log the response data here
         return response
 
+    @action(detail=True, methods=["POST"])
+    def add_skills(self, request, pk=None):
+        """Add skills to an existing user profile"""
+        profile = self.get_object()  # Get the user profile
+        skills = request.data.get("skills", [])
+
+        if not isinstance(skills, list):
+            return Response(
+                {"error": "Skills must be provided as a list of strings."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        skills = [str(skill).strip() for skill in skills if skill.strip()]
+
+        if not skills:
+            return Response(
+                {"error": "No valid skills provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Add skills without checking for duplicates
+        for skill_name in skills:
+            # Only add the skill if it doesn't already exist
+            skill, created = UserSkill.objects.get_or_create(
+                user_profile=profile, skill_name=skill_name
+            )
+            if not created:  # Skill already exists
+                return Response(
+                    {"error": f"Skill '{skill_name}' already exists."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        return Response(
+            {"message": "Skills added successfully!", "skills": skills},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class UserSkillViewSet(viewsets.ViewSet):
+    """Handles skill verification"""
+
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request):
+        """List all skills for the user profile"""
+        skills = UserSkill.objects.all()
+        serializer = UserSkillSerializer(skills, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["PUT"])
+    def verify(self, request, pk=None):
+        """Mark a skill as verified"""
+        try:
+            skill = UserSkill.objects.get(pk=pk, user_profile=request.user.profile)
+            skill.verified = True
+            skill.save()
+            return Response(
+                {"message": "Skill verified successfully!"}, status=status.HTTP_200_OK
+            )
+        except UserSkill.DoesNotExist:
+            return Response(
+                {"error": "Skill not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    @action(detail=True, methods=["DELETE"])
+    def delete_skill(self, request, pk=None):
+        """Delete a skill from the user profile"""
+        try:
+            skill = UserSkill.objects.get(pk=pk, user_profile=request.user.profile)
+            skill.delete()
+            return Response(
+                {"message": "Skill deleted successfully!"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        except UserSkill.DoesNotExist:
+            return Response(
+                {"error": "Skill not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 # ✅ Team ViewSet
 class TeamViewSet(viewsets.ModelViewSet):
@@ -165,6 +251,77 @@ class TeamViewSet(viewsets.ModelViewSet):
         return Response(
             {"detail": "You have left the team."}, status=status.HTTP_200_OK
         )
+
+
+class InvitationViewSet(viewsets.ModelViewSet):
+    queryset = Invitation.objects.all()
+    serializer_class = InvitationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request):
+        """Send an invitation to a user for a specific team."""
+        sender = request.user
+        recipient_id = request.data.get("recipient_id")
+        team_id = request.data.get("team_id")
+
+        # Ensure sender is in the team
+        team = Team.objects.filter(id=team_id, members=sender).first()
+        if not team:
+            return Response(
+                {"detail": "You are not a member of this team."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        recipient = User.objects.filter(id=recipient_id).first()
+        if not recipient:
+            return Response(
+                {"detail": "Recipient not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Check if the invitation already exists
+        if Invitation.objects.filter(
+            sender=sender, recipient=recipient, team=team, status="pending"
+        ).exists():
+            return Response(
+                {"detail": "An invitation is already pending."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create invitation
+        invitation = Invitation.objects.create(
+            sender=sender, recipient=recipient, team=team
+        )
+        return Response(
+            InvitationSerializer(invitation).data, status=status.HTTP_201_CREATED
+        )
+
+    @action(detail=True, methods=["post"])
+    def respond(self, request, pk=None):
+        """Accept or reject an invitation."""
+        invitation = self.get_object()
+
+        if invitation.recipient != request.user:
+            return Response(
+                {"detail": "You are not allowed to respond to this invitation."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        action = request.data.get("action")
+
+        if action == "accept":
+            invitation.team.members.add(invitation.recipient)  # Add user to team
+            message = "You have joined the team!"
+        elif action == "reject":
+            message = "Invitation rejected."
+        else:
+            return Response(
+                {"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # **Delete the invitation after responding**
+        invitation.delete()
+
+        return Response({"detail": message}, status=status.HTTP_200_OK)
 
 
 # ✅ Room (Chatroom) ViewSet
@@ -271,3 +428,103 @@ def kick_member_from_team(request, team_id):
     return Response(
         {"detail": "Member kicked successfully."}, status=status.HTTP_200_OK
     )
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def recommend_teams(request):
+    """API endpoint to recommend teams based on user profile."""
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "User is not authenticated"}, status=401)
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return JsonResponse({"error": "User profile not found"}, status=404)
+
+    # Fetch the user's skills correctly by joining them into a string
+    user_skills = " ".join(
+        [skill.skill_name.lower() for skill in user_profile.skills.all()]
+    )
+    user_role = (user_profile.role or "").lower()
+    user_data = user_skills + " " + user_role  # Combine role and skills
+
+    # Fetch all teams
+    teams = Team.objects.all()
+    if not teams.exists():
+        return JsonResponse({"error": "No teams found"}, status=404)
+
+    # Ensure `looking_for` and `description` are not None
+    team_data = [
+        (team.looking_for or "").lower() + " " + (team.description or "").lower()
+        for team in teams
+    ]
+
+    # Vectorizing the text data using TF-IDF
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([user_data] + team_data)
+
+    # Compute cosine similarity between user profile and all teams
+    similarities = cosine_similarity(vectors[0], vectors[1:]).flatten()
+
+    # Sort teams based on similarity scores
+    team_scores = list(zip(teams, similarities))
+    team_scores.sort(key=lambda x: x[1], reverse=True)
+
+    # Serialize top 5 recommended teams
+    recommended_teams = TeamSerializer(
+        [team for team, score in team_scores[:5] if score > 0], many=True
+    ).data
+
+    return Response({"recommended_teams": recommended_teams})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def recommend_users(request, team_id):
+    """API endpoint to recommend users based on a team's description and looking_for field."""
+    try:
+        team = Team.objects.get(id=team_id)
+    except Team.DoesNotExist:
+        return Response({"error": "Team not found"}, status=404)
+
+    # Ensure `looking_for` and `description` are not None
+    team_description = (team.description or "").lower()
+    team_looking_for = (team.looking_for or "").lower()
+    team_data = (
+        team_description + " " + team_looking_for
+    )  # Combine description and looking_for
+
+    # Fetch all user profiles
+    users = UserProfile.objects.all()
+    if not users.exists():
+        return Response({"error": "No users found"}, status=404)
+
+    # Ensure `role` and `skills` are not None for each user
+    user_data = [
+        (user.role or "").lower()
+        + " "
+        + " ".join([skill.skill_name.lower() for skill in user.skills.all()])
+        for user in users
+    ]
+
+    # Vectorizing the text data using TF-IDF
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([team_data] + user_data)
+
+    # Compute cosine similarity between team and all users
+    similarities = cosine_similarity(vectors[0], vectors[1:]).flatten()
+
+    # Sort users based on similarity scores
+    user_scores = list(zip(users, similarities))
+    user_scores.sort(key=lambda x: x[1], reverse=True)
+
+    # Serialize top 5 recommended users
+    recommended_users = [
+        UserProfileSerializer(user).data
+        for user, score in user_scores[:5]
+        if score > 0  # Ensure only relevant users are shown
+    ]
+
+    return Response({"recommended_users": recommended_users})

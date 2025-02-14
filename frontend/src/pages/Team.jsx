@@ -183,129 +183,126 @@ const Team = () => {
 
     return (
         <>
-        <div className="hidden md:flex">
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        </div>
-        <LoggedinNav />
-        <div
-            className="text-white min-h-screen py-10 px-5 sm:px-10 lg:px-20 transition-all duration-300"
-            style={{
-                marginLeft: isSidebarOpen ? "15%" : "1%", // Adjust based on sidebar state
-                transition: "margin-left 0.3s ease", // Smooth transition effect
-            }}
-        >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-                {/* Team Info Card */}
-                <div className="bg-gray-800 rounded-lg shadow-xl p-6 sm:p-8 mb-10">
-                    <h1 className="text-3xl sm:text-4xl font-bold mb-4">{team.name} 
-                        {team.admin.id === loggedInUser.id && (
-                            <button
-                                onClick={() => navigate(`/team/edit/${team.id}`, { state: { team } })}
-                                className="ml-4 bg-green-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-green-700 transition duration-300"
-                            >
-                                Edit Team
-                            </button>
+            <div className="hidden md:flex">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+            <LoggedinNav />
+            <div
+                className={`text-white min-h-screen py-10 px-5 sm:px-10 lg:px-20 transition-all duration-300 ${isSidebarOpen ? "md:ml-[15%]" : "md:ml-[1%]"}`}
+
+            >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                    {/* Team Info Card */}
+                    <div className="bg-gray-800 rounded-lg shadow-xl p-6 sm:p-8 mb-10">
+                        <h1 className="text-3xl sm:text-4xl font-bold mb-4">{team.name}
+                            {team.admin.id === loggedInUser.id && (
+                                <button
+                                    onClick={() => navigate(`/team/edit/${team.id}`, { state: { team } })}
+                                    className="ml-4 bg-green-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-green-700 transition duration-300"
+                                >
+                                    Edit Team
+                                </button>
+                            )}
+                        </h1>
+                        <p className="text-xl text-gray-400 mb-6">{team.description}</p>
+
+                        {team.project_idea && (
+                            <div className="mb-6">
+                                <h3 className="text-xl font-semibold mb-2">Project Idea</h3>
+                                <p>{team.project_idea}</p>
+                            </div>
                         )}
-                    </h1>
-                    <p className="text-xl text-gray-400 mb-6">{team.description}</p>
-    
-                    {team.project_idea && (
+
                         <div className="mb-6">
-                            <h3 className="text-xl font-semibold mb-2">Project Idea</h3>
-                            <p>{team.project_idea}</p>
+                            <h3 className="text-xl font-semibold mb-2">Looking For</h3>
+                            <p>{team.looking_for}</p>
                         </div>
-                    )}
-    
-                    <div className="mb-6">
-                        <h3 className="text-xl font-semibold mb-2">Looking For</h3>
-                        <p>{team.looking_for}</p>
+
+                        <div className="mb-6">
+                            <h3 className="text-xl font-semibold mb-2">Created On</h3>
+                            <p>{new Date(team.created).toLocaleString()}</p>
+                        </div>
+
+                        <div className="mb-6">
+                            <h3 className="text-xl font-semibold mb-2">Last Updated</h3>
+                            <p>{new Date(team.updated).toLocaleString()}</p>
+                        </div>
                     </div>
-    
-                    <div className="mb-6">
-                        <h3 className="text-xl font-semibold mb-2">Created On</h3>
-                        <p>{new Date(team.created).toLocaleString()}</p>
-                    </div>
-    
-                    <div className="mb-6">
-                        <h3 className="text-xl font-semibold mb-2">Last Updated</h3>
-                        <p>{new Date(team.updated).toLocaleString()}</p>
-                    </div>
-                </div>
-    
-                {/* Members Section */}
-                <div className="mt-10">
-                    <h3 className="text-3xl sm:text-4xl font-semibold mb-4">
-                        Team Members ({members.length}/{team.members_limit})
-                    </h3>
-    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {members.map((member) => (
-                            <div
-                                key={member.id}
-                                className="bg-gray-800 text-white p-6 rounded-lg shadow-lg transform transition hover:scale-105 cursor-pointer"
-                            >
-                                <div className="flex flex-col items-center">
-                                    <div className="w-24 h-24 bg-gray-600 rounded-full flex items-center justify-center mb-4">
-                                        {member.profile?.avatar ? (
-                                            <img
-                                                src={member.profile.avatar || "/avatar.svg"}
-                                                alt={member.username}
-                                                className="rounded-full w-full h-full object-cover"
-                                                onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
-                                            />
-                                        ) : (
-                                            <span className="text-2xl font-semibold">
-                                                {member.username[0]}
-                                            </span>
+
+                    {/* Members Section */}
+                    <div className="mt-10">
+                        <h3 className="text-3xl sm:text-4xl font-semibold mb-4">
+                            Team Members ({members.length}/{team.members_limit})
+                        </h3>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {members.map((member) => (
+                                <div
+                                    key={member.id}
+                                    className="bg-gray-800 text-white p-6 rounded-lg shadow-lg transform transition hover:scale-105 cursor-pointer"
+                                >
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-24 h-24 bg-gray-600 rounded-full flex items-center justify-center mb-4">
+                                            {member.profile?.avatar ? (
+                                                <img
+                                                    src={member.profile.avatar || "/avatar.svg"}
+                                                    alt={member.username}
+                                                    className="rounded-full w-full h-full object-cover"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src = "/default-avatar.png"; }}
+                                                />
+                                            ) : (
+                                                <span className="text-2xl font-semibold">
+                                                    {member.username[0]}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <p className="text-xl font-bold mb-2">@{member.username}</p>
+                                        <p className="text-gray-400 mb-4">{member.id === team.admin.id ? "Admin" : member.profile?.role || "Member"}</p>
+
+                                        {/* Kick Button: Only if the logged-in user is admin & the member is NOT the admin */}
+                                        {isAdmin && member.id !== team.admin.id && (
+                                            <button
+                                                onClick={() => handleKickMember(member.id)}
+                                                className="bg-red-600 text-white px-4 py-2 rounded-md shadow-lg hover:bg-red-700 transition duration-300"
+                                            >
+                                                Kick
+                                            </button>
                                         )}
                                     </div>
-    
-                                    <p className="text-xl font-bold mb-2">@{member.username}</p>
-                                    <p className="text-gray-400 mb-4">{member.id === team.admin.id ? "Admin" : member.profile?.role || "Member"}</p>
-    
-                                    {/* Kick Button: Only if the logged-in user is admin & the member is NOT the admin */}
-                                    {isAdmin && member.id !== team.admin.id && (
-                                        <button
-                                            onClick={() => handleKickMember(member.id)}
-                                            className="bg-red-600 text-white px-4 py-2 rounded-md shadow-lg hover:bg-red-700 transition duration-300"
-                                        >
-                                            Kick
-                                        </button>
-                                    )}
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-10 flex flex-wrap gap-4">
+                        {isAdmin ? (
+                            <p className="text-red-400">Admins cannot leave.</p>
+                        ) : isMember ? (
+                            <button onClick={handleLeaveTeam} className="bg-red-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-red-700 transition duration-300">
+                                Leave Team
+                            </button>
+                        ) : isFull ? (
+                            <p className="text-red-400">Team is full.</p>
+                        ) : (
+                            <button onClick={handleJoinTeam} className="bg-green-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-green-700 transition duration-300">
+                                Join Team
+                            </button>
+                        )}
+
+                        {isMember && (
+                            <button onClick={goToChat} className="bg-blue-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-blue-700 transition duration-300">
+                                Chat
+                            </button>
+                        )}
                     </div>
                 </div>
-    
-                {/* Action Buttons */}
-                <div className="mt-10 flex flex-wrap gap-4">
-                    {isAdmin ? (
-                        <p className="text-red-400">Admins cannot leave.</p>
-                    ) : isMember ? (
-                        <button onClick={handleLeaveTeam} className="bg-red-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-red-700 transition duration-300">
-                            Leave Team
-                        </button>
-                    ) : isFull ? (
-                        <p className="text-red-400">Team is full.</p>
-                    ) : (
-                        <button onClick={handleJoinTeam} className="bg-green-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-green-700 transition duration-300">
-                            Join Team
-                        </button>
-                    )}
-    
-                    {isMember && (
-                        <button onClick={goToChat} className="bg-blue-600 text-white px-6 py-2 rounded-md shadow-lg hover:bg-blue-700 transition duration-300">
-                            Chat
-                        </button>
-                    )}
-                </div>
             </div>
-        </div>
-    </>
-    
-    
+        </>
+
+
     );
 };
 

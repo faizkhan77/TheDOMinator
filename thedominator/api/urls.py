@@ -10,6 +10,10 @@ from .views import (
     login_view,
     signup_view,
     kick_member_from_team,
+    InvitationViewSet,
+    recommend_teams,
+    recommend_users,
+    UserSkillViewSet,
 )
 
 
@@ -20,6 +24,9 @@ router.register(r"profiles", UserProfileViewSet, basename="profile")
 router.register(r"teams", TeamViewSet, basename="team")
 router.register(r"rooms", RoomViewSet, basename="room")
 router.register(r"messages", MessageViewSet, basename="message")
+router.register(r"invitations", InvitationViewSet, basename="invitation")
+router.register(r"skills", UserSkillViewSet, basename="skill")
+
 from rest_framework_simplejwt.views import TokenRefreshView
 
 # ✅ Include router-generated URLs
@@ -29,6 +36,8 @@ urlpatterns = [
     path("", include(router.urls)),
     path("login/", login_view, name="login"),
     path("signup/", signup_view, name="signup"),
+    path("recommend-teams/", recommend_teams, name="recommend-teams"),
+    path("recommend-users/<int:team_id>/", recommend_users, name="recommend-users"),
     path("teams/<int:team_id>/kick/", kick_member_from_team, name="kick-member"),
     path(
         "token/refresh/", TokenRefreshView.as_view(), name="token_refresh"

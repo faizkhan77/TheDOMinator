@@ -4,39 +4,63 @@ const RolesandSkills = ({ setSearchQuery }) => {
     const roles = [
         "Frontend Developer",
         "Backend Developer",
+        "Full Stack Developer",
         "UI/UX Designer",
         "Database Administrator",
         "Data Analyst",
-        "DevOps Engineer"
+        "DevOps Engineer",
+        "Software Engineer",
+        "Cybersecurity Analyst",
+        "Game Developer",
+        "Cloud Engineer",
+        "AI/ML Engineer"
     ];
 
     const skills = [
         "ReactJS",
         "NodeJS",
+        "ExpressJS",
         "Django",
+        "Flask",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "Bootstrap",
+        "TailwindCSS",
+        "CSS",
+        "HTML",
         "Machine Learning",
+        "Deep Learning",
         "Figma",
         "Canva",
-        "TailwindCSS"
+        "SQL",
+        "NoSQL",
+        "Git",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Azure",
+        "Firebase"
     ];
 
     const [selectedCategory, setSelectedCategory] = useState("roles");
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 shadow-2xl w-full max-w-md sm:max-w-2xl mx-auto">
+
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-2xl p-4 sm:p-6 shadow-2xl w-full max-w-md sm:max-w-2xl mx-auto h-[90vh] flex flex-col">
             {/* Toggle Buttons */}
             <div className="flex justify-center mb-3 sm:mb-4">
                 <button
                     onClick={() => setSelectedCategory("roles")}
                     className={`px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold text-white mr-1.5 sm:mr-3 transition-all duration-300 
-                                ${selectedCategory === "roles" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
+                            ${selectedCategory === "roles" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
                 >
                     Roles
                 </button>
                 <button
                     onClick={() => setSelectedCategory("skills")}
                     className={`px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold text-white transition-all duration-300 
-                                ${selectedCategory === "skills" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
+                            ${selectedCategory === "skills" ? "bg-indigo-500" : "bg-gray-700 hover:bg-gray-600"}`}
                 >
                     Skills
                 </button>
@@ -48,7 +72,7 @@ const RolesandSkills = ({ setSearchQuery }) => {
             </h4>
 
             {/* Role/Skill Buttons */}
-            <div className="flex flex-wrap justify-center max-h-80 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 p-2">
+            <div className="flex flex-wrap justify-center flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 p-2">
                 {(selectedCategory === "roles" ? roles : skills).map((item) => (
                     <button
                         key={item}

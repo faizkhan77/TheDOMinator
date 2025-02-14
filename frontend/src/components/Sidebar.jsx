@@ -35,7 +35,7 @@ const Sidebar = ({ toggleSidebar }) => {
             <input id="nav-toggle" type="checkbox" onChange={toggleSidebar} />
             <div id="nav-header">
                 <Link id="nav-title" to="/loggedinhome" rel="noopener noreferrer">
-                    <i className="fab fa-codepen"></i>TheDOMinator
+                    HackFusion
                 </Link>
                 <label htmlFor="nav-toggle">
                     <span id="nav-toggle-burger"></span>
@@ -44,59 +44,69 @@ const Sidebar = ({ toggleSidebar }) => {
             </div>
             <div id="nav-content">
                 <div className="nav-button" onClick={() => navigate("/loggedinhome")}>
-                    <i className="fas fa-home"></i>  {/* Changed from fa-palette */}
+                    <i className="fas fa-home"></i>  {/* Home icon */}
                     <span>Home</span>
                 </div>
                 <div className="nav-button" onClick={() => navigate(`/userslist`)}>
-                    <i className="fas fa-user"></i>  {/* Changed from fa-images */}
-                    <span>Users</span>
+                    <i className="fas fa-users"></i>  {/* Users icon */}
+                    <span>All Users</span>
+                </div>
+                <div className="nav-button" onClick={() => navigate(`/recommended-content`)}>
+                    <i className="fas fa-star"></i>  {/* Recommended icon */}
+                    <span>Recommendations</span>
                 </div>
                 <div className="nav-button" onClick={() => navigate("/teams")}>
-                    <i className="fas fa-users"></i>  {/* Changed from fa-thumbtack */}
-                    <span>Teams</span>
+                    <i className="fas fa-users"></i>  {/* Teams icon */}
+                    <span>All Teams</span>
                 </div>
                 <hr />
                 <div className="nav-button" onClick={() => navigate("/activities")}>
-                    <i className="fas fa-calendar-alt"></i>  {/* Changed from fa-heart */}
-                    <span>Activities</span>
+                    <i className="fas fa-calendar-check"></i>  {/* Activities icon */}
+                    <span>My Team Activities</span>
+                </div>
+                <div className="nav-button" onClick={() => navigate("/invitations")}>
+                    <i className="fas fa-user-plus"></i>  {/* Invitations icon */}
+                    <span>Invitations</span>
                 </div>
                 <div className="nav-button" onClick={() => navigate("/team/new")}>
-                    <i className="fas fa-user-plus"></i>  {/* Changed from fa-heart */}
+                    <i className="fas fa-users-cog"></i>  {/* Create a Team icon */}
                     <span>Create a Team</span>
                 </div>
                 <div className="nav-button" onClick={() => navigate("/myteams")}>
-                    <i className="fas fa-user-plus"></i>  {/* Changed from fa-heart */}
+                    <i className="fas fa-users"></i>  {/* My Teams icon */}
                     <span>My Teams</span>
                 </div>
-                {/* <div className="nav-button" onClick={() => navigate("/Chatboat")}>
-                    <i className="fas fa-comments"></i>
-                    <span>Chatbot</span>
-                </div> */}
-
                 <hr />
                 <div className="nav-button" onClick={handleLogout}>
-                    <i className="fas fa-sign-out-alt"></i>  {/* Changed from fa-gem */}
+                    <i className="fas fa-sign-out-alt"></i>  {/* Logout icon */}
                     <span>Logout</span>
                 </div>
                 <div id="nav-content-highlight"></div>
             </div>
 
+
             <input id="nav-footer-toggle" type="checkbox" />
             <div id="nav-footer">
-                <div id="nav-footer-heading">
-                    <div id="nav-footer-avatar">
-                        {<img src={profile?.avatar} alt="Avatar" />}
+                <Link to={`/user/${user?.id}`}>
+                    <div id="nav-footer-heading">
+                        <div id="nav-footer-avatar">
+                            <img
+                                src={profile?.avatar}
+                                alt="Avatar"
+                                className="w-12 h-12 rounded-full border-2 border-gray-300"
+                            />
+                        </div>
+                        <div id="nav-footer-titlebox">
+                            <span id="nav-footer-title" rel="noopener noreferrer" style={{ fontSize: "15px" }}>
+                                {profile ? profile.full_name : "Guest"}
+                            </span>
+                            <span id="nav-footer-subtitle"></span>
+                        </div>
+                        <label htmlFor="nav-footer-toggle">
+                            <i className="fas fa-caret-up"></i>
+                        </label>
                     </div>
-                    <div id="nav-footer-titlebox">
-                        <Link id="nav-footer-title" to={`/user/${user?.id}`} rel="noopener noreferrer" style={{ fontSize: "15px" }}>
-                            {profile ? profile.full_name : "Guest"}
-                        </Link>
-                        <span id="nav-footer-subtitle"></span>
-                    </div>
-                    <label htmlFor="nav-footer-toggle">
-                        <i className="fas fa-caret-up"></i>
-                    </label>
-                </div>
+                </Link>
 
             </div>
         </div>

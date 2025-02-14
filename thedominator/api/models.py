@@ -20,13 +20,12 @@ class UserProfile(models.Model):
         max_length=100,
         help_text="E.g., Frontend Developer, Data Scientist, UI/UX Designer, etc.",
     )
-    skills = models.TextField(
-        help_text="Comma-separated skills (e.g., Python, Django, ReactJS)"
-    )
     experience = models.TextField(
         blank=True, help_text="Brief work/education experience"
     )
-
+    email = models.CharField(max_length=150, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=50, blank=True, null=True)
     # Social links
     github = models.URLField(blank=True)
     linkedin = models.URLField(blank=True)
@@ -40,6 +39,19 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class UserSkill(models.Model):
+    """Model to store individual user skills with verification status"""
+
+    user_profile = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE, related_name="skills"
+    )
+    skill_name = models.CharField(max_length=100)
+    verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user_profile.full_name} - {self.skill_name} ({'Verified' if self.verified else 'Not Verified'})"
 
 
 class Team(models.Model):
@@ -77,6 +89,29 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Invitation(models.Model):
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sent_invitations"
+    )
+    recipient = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="received_invitations"
+    )
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="invitations")
+    status = models.CharField(
+        max_length=10,
+        choices=[
+            ("pending", "Pending"),
+            ("accepted", "Accepted"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} invited {self.recipient} to {self.team.name} ({self.status})"
 
 
 class Room(models.Model):

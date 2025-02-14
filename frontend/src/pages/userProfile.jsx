@@ -6,6 +6,7 @@ import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import { FaGithub, FaFacebook, FaInstagram, FaLinkedin, FaGlobe } from "react-icons/fa"; // Import icons
 import LoggedinNav from "../components/LoggedinNav";
+import SkillAssessmentModal from "../components/SkillAssessmentModal";
 
 const UserProfile = () => {
     const [user, setUser] = useState(null)
@@ -15,6 +16,8 @@ const UserProfile = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const { id } = useParams(); // ✅ Get user ID from URL
     const loggedInUser = JSON.parse(localStorage.getItem("user")); // ✅ Get logged-in user
+    const loggedInUserProfile = JSON.parse(localStorage.getItem("userProfile")); // ✅ Get logged-in user profile
+    const [selectedSkill, setSelectedSkill] = useState(null);
 
     useEffect(() => {
         fetchUserProfile();
@@ -33,6 +36,10 @@ const UserProfile = () => {
 
             setUser(response.data.username);
             setProfile(response.data.profile);
+
+            // Reset profile in localStorage
+            localStorage.setItem("userProfile", JSON.stringify(response.data.profile));
+            console.log("✅ userProfile updated in localStorage");
         } catch (error) {
             console.error("Failed to fetch user profile:", error);
         }
@@ -53,7 +60,15 @@ const UserProfile = () => {
     };
 
     console.log("loggedin user", loggedInUser?.id)
-    console.log("profile", profile?.id)
+    console.log("profile", profile?.skills)
+
+
+    const openModal = (skill) => setSelectedSkill(skill);
+    const closeModal = () => setSelectedSkill(null);
+    const startAssessment = (skill) => {
+        setSelectedSkill(null);
+        navigate(`/assessment/${skill.skill_name}`, { state: { skillId: skill.id } }); // Redirect to assessment page
+    };
 
     return (
         <>
@@ -109,8 +124,6 @@ const UserProfile = () => {
                         )}
                     </div>
 
-
-
                     {/* Profile Details */}
                     <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
                         <h6 className="text-gray-200 text-lg font-semibold mb-4">Profile Details</h6>
@@ -119,18 +132,56 @@ const UserProfile = () => {
                                 <h6 className="text-gray-200">Full Name</h6>
                                 <p className="text-gray-400">{profile?.full_name}</p>
                             </div>
+
                             <div className="flex justify-between">
                                 <h6 className="text-gray-200">Email</h6>
                                 <p className="text-gray-400">{profile?.email}</p>
                             </div>
                             <div className="flex justify-between">
+                                <h6 className="text-gray-200">Location</h6>
+                                <p className="text-gray-400">{profile?.location}</p>
+                            </div>
+                            <div className="flex justify-between">
                                 <h6 className="text-gray-200">Role</h6>
                                 <p className="text-gray-400">{profile?.role}</p>
                             </div>
-                            <div className="flex justify-between">
-                                <h6 className="text-gray-200">Skills</h6>
-                                <p className="text-gray-400">{profile?.skills}</p>
+
+                            <div className="bg-gray-900 rounded-lg p-4 mt-4 max-h-48 overflow-y-auto">
+                                <h6 className="text-gray-200 text-lg font-semibold mb-3">Skills</h6>
+                                {profile?.skills && profile.skills.length > 0 ? (
+                                    profile.skills.map((skill, index) => (
+                                        <div key={skill.id} className="flex justify-between items-center mb-2 bg-gray-700 p-2 rounded-md">
+                                            <span className="text-gray-300">{skill.skill_name}</span>
+                                            {loggedInUserProfile?.id == skill.user_profile ? (
+                                                skill.verified ? (
+                                                    <span className="flex items-center bg-yellow-500 text-white text-xs font-semibold py-1 px-3 rounded-full">
+                                                        <i className="fas fa-check-circle mr-2"></i> Verified
+                                                    </span> // Golden verified badge with tick
+                                                ) : (
+                                                    <button
+                                                        onClick={() => openModal(skill)}
+                                                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                                                    >
+                                                        Verify
+                                                    </button>
+                                                )
+                                            ) : null}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-400">No skills listed</p>
+                                )}
+
+                                {selectedSkill && (
+                                    <SkillAssessmentModal
+                                        selectedSkill={selectedSkill}
+                                        onClose={closeModal}
+                                        onStart={startAssessment}
+                                    />
+                                )}
                             </div>
+
+
                         </div>
                     </div>
 
@@ -140,26 +191,50 @@ const UserProfile = () => {
                         <ul className="space-y-4">
                             <li className="flex items-center text-gray-200">
                                 <FaGlobe className="mr-3 text-blue-400 text-xl" />
-                                <span className="text-gray-400">{profile?.website || "Not provided"}</span>
+                                {profile?.website ? (
+                                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
+                                        Visit {profile.full_name}'s Website
+                                    </a>
+                                ) : (
+                                    <span className="text-gray-400">Not provided</span>
+                                )}
                             </li>
                             <li className="flex items-center text-gray-200">
                                 <FaGithub className="mr-3 text-blue-500 text-xl" />
-                                <span className="text-gray-400">{profile?.github || "Not provided"}</span>
+                                {profile?.github ? (
+                                    <a href={profile.github} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
+                                        Check {profile.full_name}'s GitHub
+                                    </a>
+                                ) : (
+                                    <span className="text-gray-400">Not provided</span>
+                                )}
                             </li>
                             <li className="flex items-center text-gray-200">
                                 <FaInstagram className="mr-3 text-pink-400 text-xl" />
-                                <span className="text-gray-400">{profile?.instagram || "Not provided"}</span>
+                                {profile?.instagram ? (
+                                    <a href={profile.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-300 hover:underline">
+                                        Visit {profile.full_name}'s Instagram
+                                    </a>
+                                ) : (
+                                    <span className="text-gray-400">Not provided</span>
+                                )}
                             </li>
                             <li className="flex items-center text-gray-200">
                                 <FaLinkedin className="mr-3 text-blue-700 text-xl" />
-                                <span className="text-gray-400">{profile?.linkedin || "Not provided"}</span>
+                                {profile?.linkedin ? (
+                                    <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
+                                        Connect with {profile.full_name} on LinkedIn
+                                    </a>
+                                ) : (
+                                    <span className="text-gray-400">Not provided</span>
+                                )}
                             </li>
                         </ul>
                     </div>
 
                     {/* Bio & Experience */}
                     <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full">
-                        <h6 className="text-gray-200 text-lg font-semibold mb-4">Bio & Experience</h6>
+                        <h6 className="text-gray-200 text-lg font-semibold mb-4">Bio</h6>
                         <p className="text-gray-400 whitespace-pre-line">{profile?.bio || "No bio available"}</p>
                         <h6 className="text-gray-200 text-lg font-semibold mt-4">Experience</h6>
                         <p className="text-gray-400 whitespace-pre-line">{profile?.experience || "No experience details provided"}</p>
@@ -167,6 +242,7 @@ const UserProfile = () => {
                 </div>
             </div>
         </>
+
     );
 };
 

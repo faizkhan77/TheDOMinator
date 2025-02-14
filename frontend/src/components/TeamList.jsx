@@ -19,7 +19,7 @@ const TeamList = ({ onSelectTeam, searchQuery, setSearchQuery }) => {
                     "Content-Type": "application/json",
                 },
             });
-
+            console.log(response.data)
             setTeams(response.data);
         } catch (error) {
             console.error("Failed to fetch teams:", error);

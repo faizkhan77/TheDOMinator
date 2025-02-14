@@ -1,8 +1,11 @@
 import styles from "../style";
 import { discount, robot } from "../assets";
 import GetStarted from "./GetStarted";
+import { useNavigate } from "react-router-dom";
+
 
 const Hero = () => {
+  const navigate = useNavigate()
   return (
     <section id="home" className={`flex md:flex-row flex-col ${styles.paddingY}`}>
       {/* Left Section */}
@@ -22,7 +25,7 @@ const Hero = () => {
             Assemble Your <br className="sm:block hidden" />{" "}
             <span className="text-gradient">Dream Team</span>{" "}
           </h1>
-          <div className="ss:flex hidden md:mr-4 mr-0">
+          <div className="ss:flex hidden md:mr-4 mr-0" onClick={() => navigate("/login")}>
             <GetStarted />
           </div>
         </div>
@@ -43,17 +46,25 @@ const Hero = () => {
 
       {/* Right Section */}
       <div className={`flex-1 flex ${styles.flexCenter} md:my-0 my-10 relative`}>
-        <img
-          src={robot}
-          alt="collaboration"
-          className="w-[100%] h-[100%] relative z-[5]"
-        />
+        <div className="relative group">
+          <img
+            src={robot}
+            alt="collaboration"
+            className="w-[100%] h-[100%] relative z-[5]"
+          />
 
-        {/* Gradient Backgrounds */}
-        <div className="absolute z-[0] w-[40%] h-[35%] top-0 pink__gradient" />
-        <div className="absolute z-[1] w-[80%] h-[80%] rounded-full white__gradient bottom-40" />
-        <div className="absolute z-[0] w-[50%] h-[50%] right-20 bottom-20 blue__gradient" />
+          {/* Hover Text */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-black bg-opacity-70 p-2 rounded">
+            Image created by Insiya Rizvi
+          </div>
+
+          {/* Gradient Backgrounds */}
+          <div className="absolute z-[0] w-[40%] h-[35%] top-0 pink__gradient" />
+          <div className="absolute z-[1] w-[80%] h-[80%] rounded-full white__gradient bottom-40" />
+          <div className="absolute z-[0] w-[50%] h-[50%] right-20 bottom-20 blue__gradient" />
+        </div>
       </div>
+
 
       {/* Call to Action for Smaller Screens */}
       <div className={`ss:hidden ${styles.flexCenter}`}>

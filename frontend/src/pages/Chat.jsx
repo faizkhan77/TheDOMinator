@@ -96,122 +96,122 @@ const Chat = () => {
 
     return (
         <>
-        {/* Sidebar Component */}
-        <div className="hidden md:flex">
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        </div>
-        <LoggedinNav />
-    
-        <div
-            className={`container mx-auto p-4 min-h-screen transition-all duration-300 ${isSidebarOpen ? "margin-left 0.3s ease md:ml-[20%]" : "md:ml-[5%]"} `}
-        >
-            <div className="flex flex-col lg:flex-row gap-4">
-                {/* Chat Box (Move it to the top on small screens) */}
-                <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md max-h-[calc(100vh-50px)] overflow-y-auto flex flex-col order-1 lg:order-2">
-                    {/* Chat Header */}
-                    <div className="flex items-center mb-4">
-                        <img
-                            src={team.admin.profile.avatar}
-                            alt="avatar"
-                            className="w-10 h-10 rounded-full mr-3"
-                        />
-                        <div>
-                            <h6 className="font-semibold text-white">{team.name}</h6>
-                            <small className="text-gray-400">
-                                Created: {new Date(team.created).toLocaleDateString("en-US", {
-                                    weekday: "short", // "Mon"
-                                    year: "numeric",  // "2025"
-                                    month: "short",   // "Feb"
-                                    day: "numeric",   // "3"
-                                })}
-                            </small>
+            {/* Sidebar Component */}
+            <div className="hidden md:flex">
+                <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            </div>
+            <LoggedinNav />
+
+            <div
+                className={`container mx-auto p-4 min-h-screen transition-all duration-300 ${isSidebarOpen ? "margin-left 0.3s ease md:ml-[20%]" : "md:ml-[10%]"} `}
+            >
+                <div className="flex flex-col lg:flex-row gap-4">
+                    {/* Chat Box (Move it to the top on small screens) */}
+                    <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md max-h-[calc(100vh-50px)] overflow-y-auto flex flex-col order-1 lg:order-2">
+                        {/* Chat Header */}
+                        <div className="flex items-center mb-4">
+                            <img
+                                src={team.admin.profile.avatar}
+                                alt="avatar"
+                                className="w-10 h-10 rounded-full mr-3"
+                            />
+                            <div>
+                                <h6 className="font-semibold text-white">{team.name}</h6>
+                                <small className="text-gray-400">
+                                    Created: {new Date(team.created).toLocaleDateString("en-US", {
+                                        weekday: "short", // "Mon"
+                                        year: "numeric",  // "2025"
+                                        month: "short",   // "Feb"
+                                        day: "numeric",   // "3"
+                                    })}
+                                </small>
+                            </div>
+                        </div>
+
+                        {/* Chat Messages (Scrollable) */}
+                        <div className="flex-1 overflow-y-auto flex flex-col-reverse gap-4">
+                            <ul>
+                                {messages.map((msg, index) => (
+                                    <li key={index} className={`flex mb-4 ${msg.sender.id === userId ? "justify-end" : ""}`}>
+                                        {msg.sender.id !== userId && (
+                                            <img
+                                                src={msg.sender.profile.avatar}
+                                                alt="avatar"
+                                                className="w-10 h-10 rounded-full mr-4"
+                                            />
+                                        )}
+                                        <div
+                                            className={`max-w-xs p-4 rounded-lg text-sm text-white ${msg.sender.id === userId ? "bg-gray-700" : "bg-blue-800"
+                                                }`}
+                                        >
+                                            <p>{msg.content}</p>
+                                            <div className="text-xs text-gray-400 mt-2">
+                                                {new Date(msg.timestamp).toLocaleTimeString()}
+                                            </div>
+                                        </div>
+                                        {msg.sender.id === userId && (
+                                            <img
+                                                src={msg.sender.profile.avatar || "https://via.placeholder.com/40"}
+                                                alt="avatar"
+                                                className="w-10 h-10 rounded-full ml-4"
+                                            />
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Send Message Input (Fixed at Bottom) */}
+                        <div className="border-t border-gray-700 pt-3">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
+                                    placeholder="Type a message..."
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                />
+                                <button onClick={sendMessage} className="p-2 bg-blue-600 text-white rounded-full">
+                                    <i className="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-    
-                    {/* Chat Messages (Scrollable) */}
-                    <div className="flex-1 overflow-y-auto flex flex-col-reverse gap-4">
+
+                    {/* Team Members List */}
+                    <div className="w-full lg:w-72 p-4 bg-gray-800 rounded-lg shadow-md max-h-[calc(100vh-50px)] overflow-y-auto order-2 lg:order-1">
+                        <input
+                            type="text"
+                            placeholder="Search members..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white mb-4"
+                        />
                         <ul>
-                            {messages.map((msg, index) => (
-                                <li key={index} className={`flex mb-4 ${msg.sender.id === userId ? "justify-end" : ""}`}>
-                                    {msg.sender.id !== userId && (
+                            {team.members
+                                .filter((person) =>
+                                    person.username.toLowerCase().includes(searchTerm.toLowerCase())
+                                )
+                                .map((person, index) => (
+                                    <li key={index} className="flex items-center p-2 mb-2 rounded-lg bg-gray-700 cursor-pointer" onClick={() => navigate(`/user/${person.id}`)}>
                                         <img
-                                            src={msg.sender.profile.avatar}
+                                            src={person.profile.avatar || "/avatar.svg"}
                                             alt="avatar"
-                                            className="w-10 h-10 rounded-full mr-4"
+                                            className="w-12 h-12 rounded-full mr-3"
                                         />
-                                    )}
-                                    <div
-                                        className={`max-w-xs p-4 rounded-lg text-sm text-white ${msg.sender.id === userId ? "bg-gray-700" : "bg-blue-800"
-                                            }`}
-                                    >
-                                        <p>{msg.content}</p>
-                                        <div className="text-xs text-gray-400 mt-2">
-                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        <div>
+                                            <div className="font-semibold text-white">{person.username} {person.id === team.admin.id ?
+                                                "(Admin)" : ""}</div>
+                                            <div className="text-gray-400 text-sm">{person.profile.role}</div>
                                         </div>
-                                    </div>
-                                    {msg.sender.id === userId && (
-                                        <img
-                                            src={msg.sender.profile.avatar || "https://via.placeholder.com/40"}
-                                            alt="avatar"
-                                            className="w-10 h-10 rounded-full ml-4"
-                                        />
-                                    )}
-                                </li>
-                            ))}
+                                    </li>
+                                ))}
                         </ul>
                     </div>
-    
-                    {/* Send Message Input (Fixed at Bottom) */}
-                    <div className="border-t border-gray-700 pt-3">
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="text"
-                                className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
-                                placeholder="Type a message..."
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                            />
-                            <button onClick={sendMessage} className="p-2 bg-blue-600 text-white rounded-full">
-                                <i className="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-    
-                {/* Team Members List */}
-                <div className="w-full lg:w-72 p-4 bg-gray-800 rounded-lg shadow-md max-h-[calc(100vh-50px)] overflow-y-auto order-2 lg:order-1">
-                    <input
-                        type="text"
-                        placeholder="Search members..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white mb-4"
-                    />
-                    <ul>
-                        {team.members
-                            .filter((person) =>
-                                person.username.toLowerCase().includes(searchTerm.toLowerCase())
-                            )
-                            .map((person, index) => (
-                                <li key={index} className="flex items-center p-2 mb-2 rounded-lg bg-gray-700">
-                                    <img
-                                        src={person.profile.avatar || "https://via.placeholder.com/40"}
-                                        alt="avatar"
-                                        className="w-12 h-12 rounded-full mr-3"
-                                    />
-                                    <div>
-                                        <div className="font-semibold text-white">{person.username} {person.id === team.admin.id ?
-                                            "(Admin)" : ""}</div>
-                                        <div className="text-gray-400 text-sm">{person.profile.role}</div>
-                                    </div>
-                                </li>
-                            ))}
-                    </ul>
                 </div>
             </div>
-        </div>
-    </>
-    
+        </>
+
 
     );
 };

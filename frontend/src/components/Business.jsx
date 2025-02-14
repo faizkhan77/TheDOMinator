@@ -1,6 +1,7 @@
 import { features } from "../constants";
 import styles, { layout } from "../style";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 const FeatureCard = ({ icon, title, content, index }) => (
   <div className={`flex flex-row p-6 rounded-[20px] ${index !== features.length - 1 ? "mb-6" : "mb-0"} feature-card`}>
@@ -18,25 +19,32 @@ const FeatureCard = ({ icon, title, content, index }) => (
   </div>
 );
 
-const Business = () => (
-  <section id="features" className={layout.section}>
-    <div className={layout.sectionInfo}>
-      <h2 className={styles.heading2}>
-        Build Your Dream Team, <br className="sm:block hidden" /> Let's Bring Your Ideas to Life.
-      </h2>
-      <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-        Discover the perfect teammates for your hackathon projects or collaborative ventures. Our platform connects you with skilled individuals for every part of the process.
-      </p>
+const Business = () => {
+  const navigate = useNavigate()
+  return (
 
-      <Button styles={`mt-10`} />
-    </div>
+    <section id="features" className={layout.section}>
+      <div className={layout.sectionInfo}>
+        <h2 className={styles.heading2}>
+          Build Your Dream Team, <br className="sm:block hidden" /> Let's Bring Your Ideas to Life.
+        </h2>
+        <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
+          Discover the perfect teammates for your hackathon projects or collaborative ventures. Our platform connects you with skilled individuals for every part of the process.
+        </p>
 
-    <div className={`${layout.sectionImg} flex-col`}>
-      {features.map((feature, index) => (
-        <FeatureCard key={feature.id} {...feature} index={index} />
-      ))}
-    </div>
-  </section>
-);
+        <div onClick={() => navigate("/login")}>
+          <Button styles={`mt-10`} />
+        </div>
+
+      </div>
+
+      <div className={`${layout.sectionImg} flex-col`}>
+        {features.map((feature, index) => (
+          <FeatureCard key={feature.id} {...feature} index={index} />
+        ))}
+      </div>
+    </section>
+  )
+};
 
 export default Business;

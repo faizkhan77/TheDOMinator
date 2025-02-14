@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
 import Sidebar from "../components/Sidebar";
-import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaEnvelope, FaLink } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaEnvelope, FaLink, FaMapMarkerAlt } from "react-icons/fa";
 import LoggedinNav from "../components/LoggedinNav";
 
 const EditProfile = () => {
@@ -19,6 +19,9 @@ const EditProfile = () => {
         instagram: "",
         portfolio: "",
         teams: [],  // Initialize teams as an empty array
+        email: "",
+        bio: "",
+        location: ""
     });
     const [newAvatar, setNewAvatar] = useState(null); // For handling new avatar uploads
     const navigate = useNavigate();
@@ -27,25 +30,25 @@ const EditProfile = () => {
 
     useEffect(() => {
         // ✅ Load profile data from localStorage
-
         const storedProfile = localStorage.getItem("userProfile");
-        setProfile(JSON.parse(storedProfile)); // Set profile from localStorage
-
-
-
-        // Populate form with the current profile data
         if (storedProfile) {
             const parsedProfile = JSON.parse(storedProfile);
+
+            setProfile(parsedProfile);
+
             setProfileData({
                 user: parsedProfile.user,
                 full_name: parsedProfile.full_name,
                 role: parsedProfile.role,
-                skills: parsedProfile.skills,
+                skills: parsedProfile.skills ? parsedProfile.skills.map(skill => skill.skill_name).join(", ") : "", // Convert array to string
                 experience: parsedProfile.experience,
                 github: parsedProfile.github,
                 linkedin: parsedProfile.linkedin,
                 instagram: parsedProfile.instagram,
                 portfolio: parsedProfile.portfolio,
+                email: parsedProfile.email,
+                location: parsedProfile.location,
+                bio: parsedProfile.bio,
                 teams: parsedProfile.teams || [], // Ensure teams is always an array
             });
         }
@@ -74,51 +77,130 @@ const EditProfile = () => {
         return Object.keys(newErrors).length === 0; // Return true if no errors
     };
 
+
     const handleSaveProfile = async (e) => {
         e.preventDefault();
 
         if (!validateURLs()) {
-            return; // Stop the function if validation fails
+            return;
         }
-
-        const formData = new FormData();
-        formData.append("user", profileData.user);
-        formData.append("full_name", profileData.full_name);
-        formData.append("role", profileData.role);
-        formData.append("skills", profileData.skills);
-        formData.append("experience", profileData.experience);
-        formData.append("github", profileData.github);
-        formData.append("linkedin", profileData.linkedin);
-        formData.append("instagram", profileData.instagram);
-        formData.append("portfolio", profileData.portfolio);
-
-        if (newAvatar) {
-            formData.append("avatar", newAvatar); // Append new avatar if changed
-        }
-
-        // Ensure teams field is not null by passing an empty array if no teams are selected
-        (profileData.teams || []).forEach((teamId) => {
-            formData.append("teams", teamId);  // Add each team ID to FormData
-        });
 
         try {
-            const response = await axios.put(
+
+            const formData = new FormData();
+
+            // Append profile data to the FormData object
+            formData.append("user", profileData.user);
+            formData.append("full_name", profileData.full_name);
+            formData.append("role", profileData.role);
+            formData.append("experience", profileData.experience);
+            formData.append("github", profileData.github);
+            formData.append("linkedin", profileData.linkedin);
+            formData.append("instagram", profileData.instagram);
+            formData.append("portfolio", profileData.portfolio);
+            formData.append("email", profileData.email);
+            formData.append("bio", profileData.bio);
+            formData.append("location", profileData.location);
+
+            // If a new avatar is provided, append it to the FormData object
+            if (newAvatar) {
+                formData.append("avatar", newAvatar); // Append new avatar if changed
+            }
+
+            // Ensure teams field is not null by passing an empty array if no teams are selected
+            (profileData.teams || []).forEach((teamId) => {
+                formData.append("teams", teamId);  // Add each team ID to FormData
+            });
+
+
+            // 🔹 Step 1: Update the Profile First
+            const profileResponse = await axios.put(
                 `http://127.0.0.1:8000/api/profiles/${profile.id}/`,
                 formData,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
 
-            const updatedProfile = response.data;
 
-            // Update localStorage with the updated profile
+            console.log("✅ Profile Updated Successfully", profileResponse.data);
+
+            // 🔹 Step 2: Handle Skills Update
+            const storedSkills = profile.skills.map(skill => skill.skill_name);
+
+            // Convert input string into array, remove duplicates & spaces
+            const enteredSkills = Array.from(
+                new Set(
+                    profileData.skills
+                        .split(",")
+                        .map(skill => skill.trim())
+                        .filter(skill => skill)
+                )
+            );
+
+            // Find new skills to add
+            const newSkills = enteredSkills.filter(skill => !storedSkills.includes(skill));
+
+            // Find skills to remove
+            const removedSkills = storedSkills.filter(skill => !enteredSkills.includes(skill));
+
+            const requests = [];
+
+            console.log("STORED SKILLS", storedSkills)
+            console.log("ENTERED SKILLS", enteredSkills)
+            console.log("NEW SKILLS", newSkills)
+
+
+            // 🔹 Step 3: Send New Skills (Only if new skills exist)
+            if (newSkills.length > 0) {
+                const formattedSkills = newSkills.map(skill => skill); // Just use skill names as strings
+
+                console.log("FORMATTED SKILLS", formattedSkills)
+
+                await axios.post(
+                    `http://127.0.0.1:8000/api/profiles/${profile.id}/add_skills/`,
+                    { skills: formattedSkills }, // Send the correctly formatted skills
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+
+                console.log("✅ New Skills Added:", formattedSkills);
+            }
+
+
+            // 🔹 Step 4: Remove Skills that are no longer in the list
+            if (removedSkills.length > 0) {
+                for (let skill of removedSkills) {
+                    const skillToRemove = profile.skills.find(s => s.skill_name === skill);
+
+                    // Debugging the skillToRemove
+                    console.log("Skill to remove:", skillToRemove);
+
+                    if (skillToRemove) {
+                        await axios.delete(
+                            `http://127.0.0.1:8000/api/skills/${skillToRemove.id}/delete_skill/`,
+                            { headers: { Authorization: `Bearer ${accessToken}` } }
+                        );
+
+                        console.log("❌ Removed Skill:", skill);
+                    }
+                }
+            }
+
+            // // 🔹 Step 5: Update localStorage with new profile data
+            const updatedProfile = {
+                ...profileResponse.data,
+                skills: [...profileResponse.data.skills, ...newSkills], // Add new skills to existing ones
+            };
+
             localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+            // console.log("✅ Profile and Skills updated in localStorage");
 
-            // Redirect back to the home page
-            navigate("/loggedinhome");
+
+            console.log("✅ Profile Update Complete!");
+            navigate(-1);
         } catch (err) {
-            console.error("Profile update failed:", err);
+            console.error("🔹 Error Response:", err.response?.data || err.message);
         }
     };
+
 
 
 
@@ -153,16 +235,13 @@ const EditProfile = () => {
                                         <label className="font-semibold">Avatar</label>
                                         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                                             <div className="w-24 sm:w-32 h-24 sm:h-32 rounded-full flex justify-center items-center overflow-hidden border-4 border-purple-500 shadow-lg">
-                                                {profileData.avatar ? (
+                                                {(
                                                     <img
-                                                        src={profileData.avatar}
+                                                        src={profile?.avatar || "/avatar.svg"}
                                                         alt="Avatar Preview"
                                                         className="w-full h-full object-cover"
                                                     />
-                                                ) : (
-                                                    <div className="w-full h-full flex justify-center items-center bg-gray-700 text-gray-400">
-                                                        No Avatar
-                                                    </div>
+
                                                 )}
                                             </div>
                                             <label className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full shadow-md transition duration-300">
@@ -218,7 +297,49 @@ const EditProfile = () => {
                                                 {errors[item.name] && <p className="text-red-500 text-sm">{errors[item.name]}</p>}
                                             </div>
                                         ))}
+
+                                        {/* Email Field */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-4">
+                                            <FaEnvelope className="text-green-500 text-2xl" />
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={profileData.email}
+                                                onChange={handleChange}
+                                                placeholder="Email Address"
+                                                className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
+                                            />
+                                            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                                        </div>
+
+                                        {/* Location Field */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-4">
+                                            <FaMapMarkerAlt className="text-green-500 text-2xl" />
+                                            <input
+                                                type="text"
+                                                name="location"
+                                                value={profileData.location}
+                                                onChange={handleChange}
+                                                placeholder="Location"
+                                                className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
+                                            />
+                                            {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
+                                        </div>
                                     </div>
+                                </div>
+
+
+                                {/* Bio Section */}
+                                <div div className="col-span-1 sm:col-span-2" >
+                                    <h2 className="text-xl sm:text-2xl font-semibold mb-4">Bio</h2>
+                                    <textarea
+                                        name="bio"
+                                        value={profileData.bio}
+                                        onChange={handleChange}
+                                        rows="4"
+                                        placeholder="Enter your skills"
+                                        className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
+                                    ></textarea>
                                 </div >
 
                                 {/* Skills Section */}

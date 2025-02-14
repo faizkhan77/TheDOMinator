@@ -1,6 +1,32 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserProfile, Team, Room, Message
+from .models import UserProfile, Team, Room, Message, Invitation, UserSkill
+
+
+class UserSkillSerializer(serializers.ModelSerializer):
+    """Serializer for UserSkill model"""
+
+    class Meta:
+        model = UserSkill
+        fields = ["id", "user_profile", "skill_name", "verified"]
+
+    def create(self, validated_data):
+        """Create a new skill"""
+        skill_name = validated_data.get("skill_name")
+        user_profile = validated_data.get("user_profile")
+
+        # Check if the skill already exists
+        skill, created = UserSkill.objects.get_or_create(
+            user_profile=user_profile, skill_name=skill_name
+        )
+        return skill
+
+    def update(self, instance, validated_data):
+        """Update an existing skill"""
+        instance.skill_name = validated_data.get("skill_name", instance.skill_name)
+        instance.verified = validated_data.get("verified", instance.verified)
+        instance.save()
+        return instance
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -9,6 +35,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     teams = serializers.PrimaryKeyRelatedField(
         queryset=Team.objects.all(), many=True, required=False
     )  # Set required=False
+
+    # Skills should be writable now
+    skills = UserSkillSerializer(many=True, required=False)
 
     class Meta:
         model = UserProfile
@@ -27,8 +56,31 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "portfolio",
             "created",
             "updated",
+            "email",
+            "bio",
+            "location",
         ]
         read_only_fields = ["created", "updated"]
+
+    def update(self, instance, validated_data):
+        """Update the user profile and skills"""
+        skills_data = validated_data.pop("skills", None)
+        instance = super().update(instance, validated_data)
+
+        if skills_data:
+            # Use bulk_create to avoid multiple database hits
+            skills = []
+            for skill_data in skills_data:
+                skill_name = skill_data.get("skill_name")
+                verified = skill_data.get("verified", False)
+                skills.append(
+                    UserSkill(
+                        user_profile=instance, skill_name=skill_name, verified=verified
+                    )
+                )
+            UserSkill.objects.bulk_create(skills)
+
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -66,6 +118,16 @@ class TeamSerializer(serializers.ModelSerializer):
             "updated",
         ]
         read_only_fields = ["created", "updated"]
+
+
+class InvitationSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    recipient = UserSerializer(read_only=True)
+    team = TeamSerializer(read_only=True)
+
+    class Meta:
+        model = Invitation
+        fields = ["id", "sender", "recipient", "team", "status", "created_at"]
 
 
 class RoomSerializer(serializers.ModelSerializer):

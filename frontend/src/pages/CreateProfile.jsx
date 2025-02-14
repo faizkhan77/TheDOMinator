@@ -24,6 +24,9 @@ const CreateProfile = () => {
         linkedin: "",
         instagram: "",
         portfolio: "",
+        email: "",
+        bio: "",
+        location: ""
     });
 
     const [error, setError] = useState("");
@@ -56,34 +59,75 @@ const CreateProfile = () => {
             return; // Stop the function if validation fails
         }
 
-
         console.log("🔹 Access Token:", accessToken);
         console.log("🔹 User Object:", user);
         console.log("🔹 User ID:", user?.id); // Check if user.id exists
 
-
         try {
-            // ✅ Send POST request to create profile
-            const response = await axios.post("http://127.0.0.1:8000/api/profiles/",
-                {
-                    ...profileData,
-                    user: user.id,
-                    teams: []  // Ensure teams is passed as an empty array if no teams selected
-                },
+            // 🔹 Step 1: Create the Profile First (Without Skills)
+            const profilePayload = {
+                full_name: profileData.full_name,
+                role: profileData.role,
+                experience: profileData.experience,
+                github: profileData.github,
+                linkedin: profileData.linkedin,
+                instagram: profileData.instagram,
+                portfolio: profileData.portfolio,
+                email: profileData.email,
+                bio: profileData.bio,
+                location: profileData.location,
+                user: user.id, // Ensure user ID is passed
+                teams: [], // Ensure teams is passed as an empty array if no teams are selected
+            };
+
+            console.log("🔹 Creating Profile with Payload:", profilePayload);
+
+            const profileResponse = await axios.post(
+                "http://127.0.0.1:8000/api/profiles/",
+                profilePayload,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
 
-            const createdProfile = response.data; // Store API response
+            const createdProfile = profileResponse.data;
+            console.log("✅ Profile Created Successfully:", createdProfile);
 
-            // ✅ Store profile in localStorage
+            // Store profile in localStorage
             localStorage.setItem("userProfile", JSON.stringify(createdProfile));
 
-            // ✅ Redirect after profile setup
+            // Get the newly created profile ID
+            const profileId = createdProfile.id;
+
+            // 🔹 Step 2: Send Skills (Now That Profile Exists)
+            const skillsArray = profileData.skills
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter((skill) => skill.length > 0);
+
+
+            if (skillsArray.length > 0) {
+                console.log("🔹 Sending Skills:", skillsArray);
+
+                await axios.post(
+                    `http://127.0.0.1:8000/api/profiles/${profileId}/add_skills/`,
+                    { skills: skillsArray }, // Send a list of strings, not objects
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+
+
+                console.log("✅ Skills Added Successfully!");
+            }
+
+            // Redirect after profile setup
             navigate("/loggedinhome");
         } catch (err) {
+            console.log("🔹 Error response:", err.response); // Log the error response for debugging
             setError("Profile creation failed");
         }
     };
+
+
+
+
 
 
     return (
@@ -122,6 +166,16 @@ const CreateProfile = () => {
                                             placeholder="Your current role (e.g., Developer)"
                                             className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
                                             name="role" value={profileData.role} onChange={handleChange} required
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center gap-4">
+                                        <label className="w-32">Location</label>
+                                        <input
+                                            type="text"  // We will keep this as text to manually control the input
+                                            placeholder="Where are you located?"
+                                            name="location" value={profileData.location} onChange={handleChange}
+                                            className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
                                         />
                                     </div>
 
@@ -176,23 +230,14 @@ const CreateProfile = () => {
                                         {linkerrors.github && <p className="text-red-500 text-sm">{linkerrors.github}</p>}
                                     </div>
 
-                                    {/* <div className="flex items-center gap-4">
-                                    <FaFacebook className="text-blue-600 text-2xl" />
-                                    <input
-                                        type="text"
-                                        placeholder="Facebook Profile URL"
-                                        className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300"
-                                    />
-                                </div> */}
-
-                                    {/* <div className="flex items-center gap-4">
-                                    <FaEnvelope className="text-red-500 text-2xl" />
-                                    <input
-                                        type="email"
-                                        placeholder="Email Address"
-                                        className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
-                                    />
-                                </div> */}
+                                    <div className="flex items-center gap-4">
+                                        <FaEnvelope className="text-red-500 text-2xl" />
+                                        <input
+                                            type="email"
+                                            placeholder="Email Address"
+                                            className="w-full bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
+                                        />
+                                    </div>
 
                                     <div className="flex items-center gap-4">
                                         <FaLink className="text-green-500 text-2xl" />
@@ -207,6 +252,15 @@ const CreateProfile = () => {
                                 </div>
                             </div>
 
+                            <div className="col-span-2">
+                                <h2 className="text-2xl font-semibold mb-4">Bio</h2>
+                                <textarea
+                                    placeholder="Write something about yourself..."
+                                    className="w-full bg-gray-700 p-4 rounded h-40 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
+                                    name="bio" value={profileData.bio} onChange={handleChange} required
+                                />
+                            </div>
+
                             {/* Skills Section */}
                             <div className="col-span-2">
                                 <h2 className="text-2xl font-semibold mb-4">Skills</h2>
@@ -216,6 +270,7 @@ const CreateProfile = () => {
                                     name="skills" value={profileData.skills} onChange={handleChange} required
                                 />
                             </div>
+
                         </div>
 
                         {/* Submit Button */}
