@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { Navbar } from '../components';
 import styles from '../style';
+import emailjs from '@emailjs/browser'
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +22,19 @@ export const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic (e.g., sending to an API or server)
+    emailjs
+      .sendForm('service_rvbknul', 'template_qikbkai', e.target, {
+        publicKey: 'k9Pt_WGKzhQd7nteq',
+      })
+      .then(
+        () => {
+          console.log('SUCCESS!');
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+        },
+      );
+
     alert('Message sent!');
   };
 
@@ -105,10 +118,10 @@ export const Contact = () => {
           <div className="text-center mt-8 space-y-4">
             <h2 className="text-xl font-bold text-[#6556cd]">Contact Information</h2>
             <p className="text-gray-400 text-lg">
-              Email: <span className="text-white">support@yourwebsite.com</span>
+              Email: <span className="text-white">faizkhan.net7@gmail.com</span>
             </p>
             <p className="text-gray-400 text-lg">
-              Phone: <span className="text-white">+91 8424961215</span>
+              Phone: <span className="text-white">+91 7506984906</span>
             </p>
           </div>
         </div>

@@ -27,7 +27,7 @@ const UserProfile = () => {
         const token = localStorage.getItem("access");
 
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/users/${id}/`, {
+            const response = await axios.get(`/api/users/${id}/`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -38,7 +38,7 @@ const UserProfile = () => {
             setProfile(response.data.profile);
 
             // Reset profile in localStorage
-            localStorage.setItem("userProfile", JSON.stringify(response.data.profile));
+            // localStorage.setItem("userProfile", JSON.stringify(response.data.profile));
             console.log("✅ userProfile updated in localStorage");
         } catch (error) {
             console.error("Failed to fetch user profile:", error);
@@ -152,20 +152,21 @@ const UserProfile = () => {
                                     profile.skills.map((skill, index) => (
                                         <div key={skill.id} className="flex justify-between items-center mb-2 bg-gray-700 p-2 rounded-md">
                                             <span className="text-gray-300">{skill.skill_name}</span>
-                                            {loggedInUserProfile?.id == skill.user_profile ? (
-                                                skill.verified ? (
+                                            <div className="flex items-center space-x-2">
+                                                {skill.verified && (
                                                     <span className="flex items-center bg-yellow-500 text-white text-xs font-semibold py-1 px-3 rounded-full">
                                                         <i className="fas fa-check-circle mr-2"></i> Verified
-                                                    </span> // Golden verified badge with tick
-                                                ) : (
+                                                    </span>
+                                                )}
+                                                {loggedInUserProfile?.id === skill.user_profile && !skill.verified && (
                                                     <button
                                                         onClick={() => openModal(skill)}
                                                         className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                                                     >
                                                         Verify
                                                     </button>
-                                                )
-                                            ) : null}
+                                                )}
+                                            </div>
                                         </div>
                                     ))
                                 ) : (

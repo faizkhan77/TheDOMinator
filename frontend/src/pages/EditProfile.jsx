@@ -115,7 +115,7 @@ const EditProfile = () => {
 
             // 🔹 Step 1: Update the Profile First
             const profileResponse = await axios.put(
-                `http://127.0.0.1:8000/api/profiles/${profile.id}/`,
+                `/api/profiles/${profile.id}/`,
                 formData,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
@@ -156,7 +156,7 @@ const EditProfile = () => {
                 console.log("FORMATTED SKILLS", formattedSkills)
 
                 await axios.post(
-                    `http://127.0.0.1:8000/api/profiles/${profile.id}/add_skills/`,
+                    `/api/profiles/${profile.id}/add_skills/`,
                     { skills: formattedSkills }, // Send the correctly formatted skills
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
@@ -175,7 +175,7 @@ const EditProfile = () => {
 
                     if (skillToRemove) {
                         await axios.delete(
-                            `http://127.0.0.1:8000/api/skills/${skillToRemove.id}/delete_skill/`,
+                            `/api/skills/${skillToRemove.id}/delete_skill/`,
                             { headers: { Authorization: `Bearer ${accessToken}` } }
                         );
 

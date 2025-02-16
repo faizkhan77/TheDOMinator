@@ -92,65 +92,57 @@ export const stats = [
 
 export const footerLinks = [
   {
-    title: "Useful Links",
+    title: "Mohd Faiz Khan",
     links: [
       {
-        name: "Content",
-        link: "https://www.hoobank.com/content/",
+        name: "LinkedIn",
+        link: "https://www.linkedin.com/in/faiz-khan77/",
       },
       {
-        name: "How it Works",
-        link: "https://www.hoobank.com/how-it-works/",
+        name: "Github",
+        link: "https://github.com/faizkhan77",
       },
       {
-        name: "Create",
-        link: "https://www.hoobank.com/create/",
+        name: "Instagram",
+        link: "https://www.instagram.com/m_faiz_k_/?hl=en",
       },
       {
-        name: "Explore",
-        link: "https://www.hoobank.com/explore/",
-      },
-      {
-        name: "Terms & Services",
-        link: "https://www.hoobank.com/terms-and-services/",
+        name: "Whatsapp",
+        link: "https://wa.me/917506984906",
       },
     ],
   },
   {
-    title: "Community",
+    title: "Moin Nakhwaji",
     links: [
       {
-        name: "Help Center",
-        link: "https://www.hoobank.com/help-center/",
+        name: "LinkedIn",
+        link: "https://www.linkedin.com/in/moin-nakhwaji-8353b72aa/",
       },
       {
-        name: "Partners",
-        link: "https://www.hoobank.com/partners/",
+        name: "Github",
+        link: "https://github.com/moinnakhwaji",
       },
       {
-        name: "Suggestions",
-        link: "https://www.hoobank.com/suggestions/",
+        name: "Instagram",
+        link: "https://www.instagram.com/moinnakhwaji/?hl=en",
       },
       {
-        name: "Blog",
-        link: "https://www.hoobank.com/blog/",
-      },
-      {
-        name: "Newsletters",
-        link: "https://www.hoobank.com/newsletters/",
+        name: "Whatsapp",
+        link: "https://wa.me/918424961215",
       },
     ],
   },
   {
-    title: "Partner",
+    title: "Hire us",
     links: [
       {
-        name: "Our Partner",
-        link: "https://www.hoobank.com/our-partner/",
+        name: "Contact us Directly",
+        // link: "",
       },
       {
-        name: "Become a Partner",
-        link: "https://www.hoobank.com/become-a-partner/",
+        name: "Contact via LinkedIn",
+        // link: "#",
       },
     ],
   },

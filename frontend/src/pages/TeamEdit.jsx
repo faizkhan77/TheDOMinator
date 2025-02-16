@@ -15,7 +15,7 @@ const TeamEdit = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/users/", {
+                const response = await axios.get("/api/users/", {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const TeamEdit = () => {
             if (team) {
                 // If editing an existing team
                 response = await axios.put(
-                    `http://127.0.0.1:8000/api/teams/${team.id}/`,
+                    `/api/teams/${team.id}/`,
                     formData,
                     {
                         headers: {
@@ -71,7 +71,7 @@ const TeamEdit = () => {
                 );
             } else {
                 // If creating a new team
-                response = await axios.post("http://127.0.0.1:8000/api/teams/", formData, {
+                response = await axios.post("/api/teams/", formData, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const TeamEdit = () => {
 
                 // Send update request to backend
                 await axios.patch(
-                    `http://127.0.0.1:8000/api/profiles/${storedProfile.id}/`,
+                    `/api/profiles/${storedProfile.id}/`,
                     { teams: updatedProfile.teams },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

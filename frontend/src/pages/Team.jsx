@@ -46,7 +46,7 @@ const Team = () => {
         try {
             // Join the team by making the API call
             await axios.post(
-                `http://127.0.0.1:8000/api/teams/${team.id}/join/`,
+                `/api/teams/${team.id}/join/`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -72,7 +72,7 @@ const Team = () => {
 
             // Send the request to update the user's profile in the backend
             await axios.patch(
-                `http://127.0.0.1:8000/api/profiles/${profile.id}/`,
+                `/api/profiles/${profile.id}/`,
                 { teams: updatedProfile.teams },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -91,7 +91,7 @@ const Team = () => {
 
         try {
             await axios.post(
-                `http://127.0.0.1:8000/api/teams/${team.id}/leave/`,
+                `/api/teams/${team.id}/leave/`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -108,7 +108,7 @@ const Team = () => {
 
             // Send request to update the backend profile
             await axios.patch(
-                `http://127.0.0.1:8000/api/profiles/${profile.id}/`,
+                `/api/profiles/${profile.id}/`,
                 { teams: updatedProfile.teams },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -128,10 +128,18 @@ const Team = () => {
             return;
         }
 
+        console.log(`Kicking member with ID: ${memberId} from team ${team.id}`);
+
+        // Find the member's username before kicking them
+        const kickedMember = members.find((member) => member.id === memberId);
+        const memberUsername = kickedMember ? kickedMember.username : "Unknown";
+
+        console.log("kicked member's username", memberUsername)
+
         try {
             // Sending the request to kick the member
             await axios.post(
-                `http://127.0.0.1:8000/api/teams/${team.id}/kick/`,
+                `/api/teams/${team.id}/kick/`,
                 { memberId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -139,19 +147,18 @@ const Team = () => {
             // Remove the kicked member from the members list
             setMembers(members.filter((member) => member.id !== memberId));
 
-            // Remove the team ID from the kicked member's profile in localStorage
-            const updatedProfile = {
-                ...profile,
-                teams: profile.teams.filter((teamId) => teamId !== team.id)
-            };
-            localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+            // Update myTeams in localStorage
+            const myTeams = JSON.parse(localStorage.getItem("myTeams")) || [];
 
-            // Send request to update the backend profile
-            await axios.patch(
-                `http://127.0.0.1:8000/api/profiles/${profile.id}/`,
-                { teams: updatedProfile.teams },
-                { headers: { Authorization: `Bearer ${token}` } }
+            // Update the specific team in myTeams
+            const updatedMyTeams = myTeams.map((t) =>
+                t.id === team.id
+                    ? { ...t, members: t.members.filter((member) => member.id !== memberId) }
+                    : t
             );
+
+            // Save updated myTeams back to localStorage
+            localStorage.setItem("myTeams", JSON.stringify(updatedMyTeams));
 
             // Add activity log for kicking
             addActivity(`${memberUsername} was kicked from ${team.name} by ${loggedInUser.username}`, team.id);

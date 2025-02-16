@@ -83,7 +83,7 @@ const CreateProfile = () => {
             console.log("🔹 Creating Profile with Payload:", profilePayload);
 
             const profileResponse = await axios.post(
-                "http://127.0.0.1:8000/api/profiles/",
+                "/api/profiles/",
                 profilePayload,
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
@@ -108,7 +108,7 @@ const CreateProfile = () => {
                 console.log("🔹 Sending Skills:", skillsArray);
 
                 await axios.post(
-                    `http://127.0.0.1:8000/api/profiles/${profileId}/add_skills/`,
+                    `/api/profiles/${profileId}/add_skills/`,
                     { skills: skillsArray }, // Send a list of strings, not objects
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );

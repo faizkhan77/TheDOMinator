@@ -50,7 +50,7 @@ const LoggedinHome = () => {
 
       const userTeamIds = userProfile?.teams || [];
 
-      const response = await axios.get("http://127.0.0.1:8000/api/teams/", {
+      const response = await axios.get("/api/teams/", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",

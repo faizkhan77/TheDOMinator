@@ -8,7 +8,7 @@ const RolesandSkills = ({ setSearchQuery }) => {
         "UI/UX Designer",
         "Database Administrator",
         "Data Analyst",
-        "DevOps Engineer",
+        "Python Developer",
         "Software Engineer",
         "Cybersecurity Analyst",
         "Game Developer",

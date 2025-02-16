@@ -43,10 +43,7 @@ const ActivitiesPage = () => {
             </div>
             <div
                 className={`px-8 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : "md:ml-[10%]"}`}
-            // style={{
-            //     marginLeft: isSidebarOpen ? "20%" : "10%", // Adjust margin-left based on sidebar state
-            //     transition: "margin-left 0.3s ease" // Smooth transition for the shift
-            // }}
+                style={{ height: "97vh", overflowY: "auto" }} // Fixed height with scrollbar
             >
                 <h2 className="text-3xl font-semibold text-white mb-6">Recent Activities</h2>
 
@@ -55,8 +52,7 @@ const ActivitiesPage = () => {
                     <div className="space-y-8">
                         {activities
                             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort by newest first
-                            .slice(0, 4)
-                            .map((activity, index) => (
+                            .map((activity, index) => ( // No slice(), display all
                                 <div
                                     key={index}
                                     className="bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-700 transition-all duration-300"
@@ -74,6 +70,7 @@ const ActivitiesPage = () => {
                     <p className="text-gray-500 text-center">No recent activities.</p>
                 )}
             </div>
+
         </>
     );
 };

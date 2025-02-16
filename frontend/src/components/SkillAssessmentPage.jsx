@@ -58,8 +58,8 @@ const SkillAssessmentPage = () => {
             getFinalFeedback(skill, totalScore).then(setFinalFeedback);
             setShowSummary(true);
 
-            // If the user got 3 or more answers correct, update the skill
-            if (correctAnswers >= 3) {
+            // If the user got 7 or more answers correct, update the skill
+            if (correctAnswers >= 7) {
                 updateSkillVerification();
             }
         }
@@ -77,7 +77,7 @@ const SkillAssessmentPage = () => {
                 console.error("Access token not found");
                 return;
             }
-            const response = await fetch(`http://127.0.0.1:8000/api/skills/${skillId}/verify/`, {
+            const response = await fetch(`/api/skills/${skillId}/verify/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,6 +99,8 @@ const SkillAssessmentPage = () => {
     const toggleSidebar = () => {
         setIsSidebarOpen(prevState => !prevState);
     };
+
+    console.log("QUESTIONS", questions)
 
     return (
         <>
@@ -137,7 +139,7 @@ const SkillAssessmentPage = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl h-full overflow-y-auto transition-all transform hover:scale-105">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl h-[95vh] overflow-y-auto transition-all transform">
                         <h2 className="text-3xl font-semibold mb-6 text-gray-200">Assessment Complete!</h2>
                         {Object.entries(answers).map(([index, answer]) => (
                             <div key={index} className="mt-3 p-4 bg-gray-700 rounded-md">
@@ -180,11 +182,18 @@ const SkillAssessmentPage = () => {
 
                         <button
                             onClick={() => navigate(-1)}
-                            className="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition duration-200 ease-in-out transform hover:scale-105"
+                            className="mt-4 px-6 py-3 bg-gradient-to-r from-purple-700 via-purple-800 to-purple-900 
+               hover:from-purple-800 hover:via-purple-900 hover:to-black 
+               text-white rounded-lg shadow-lg transition-all duration-300 
+               transform hover:scale-105 hover:shadow-purple-500/50 
+               border border-purple-600 hover:border-purple-400"
                         >
                             Back to Profile
                         </button>
+
                     </div>
+
+
                 )}
             </div>
         </>

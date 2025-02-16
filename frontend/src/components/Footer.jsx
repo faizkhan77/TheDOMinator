@@ -39,7 +39,10 @@ const Footer = () => (
                   className={`font-poppins font-normal text-[16px] leading-[24px] text-dimWhite hover:text-secondary cursor-pointer ${index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
                     }`}
                 >
-                  {link.name}
+                  <a href={link.link} target="_blank">
+                    {link.name}
+                  </a>
+
                 </li>
               ))}
             </ul>
@@ -50,8 +53,12 @@ const Footer = () => (
 
     <div className="w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
       <p className="font-poppins font-normal text-center text-[18px] leading-[27px] text-white">
-        Copyright Ⓒ 2025 HackFusion. Developed and designed by Mohd Faiz Khan and Moin Nakhwaji
+        Copyright Ⓒ 2025 HackFusion. Developed and designed by
+        <a href="https://faizkhanpy.pythonanywhere.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline"> Mohd Faiz Khan </a>
+        and
+        <a href="https://your-link-for-moin" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline"> Moin Nakhwaji </a>.
       </p>
+
 
       {/* <div className="flex flex-row md:mt-0 mt-6">
         {socialMedia.map((social, index) => (

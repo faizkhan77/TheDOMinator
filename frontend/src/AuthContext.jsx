@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/login/", { username, password });
+            const response = await axios.post("/api/login/", { username, password });
             setAccessToken(response.data.access);
             setRefreshToken(response.data.refresh);
             setUser(response.data.user);
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
         try {
             console.log("🔹 Signing up user:", username);
 
-            const response = await axios.post("http://127.0.0.1:8000/api/signup/", {
+            const response = await axios.post("/api/signup/", {
                 username,
                 password,
                 confirm_password: confirmPassword,
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
     const refreshAccessToken = async () => {
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/token/refresh/", { refresh: refreshToken });
+            const response = await axios.post("/api/token/refresh/", { refresh: refreshToken });
             setAccessToken(response.data.access);
             localStorage.setItem("access", response.data.access);
         } catch (error) {
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
             console.log("Fetching user data with token:", token);  // Log the token
 
             // Step 1: Fetch the user details to get the profile ID
-            const userResponse = await axios.get(`http://127.0.0.1:8000/api/users/${userId}`, {
+            const userResponse = await axios.get(`/api/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
             console.log("Fetched Profile ID:", profileId);  // Log the profile ID
 
             // Step 2: Fetch the profile data using the extracted profile ID
-            const profileResponse = await axios.get(`http://127.0.0.1:8000/api/profiles/${profileId}/`, {
+            const profileResponse = await axios.get(`/api/profiles/${profileId}/`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

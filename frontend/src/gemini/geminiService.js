@@ -6,13 +6,13 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 export const getQuestions = async (skill) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const prompt = `Ask 15 technical questions related to the skill: ${skill}.
+    const prompt = `Ask 15 technical questions related to the skill: ${skill}. Theoretical questions are preferred instead of practicals.
     Format: "Question: ..."`; 
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.candidates[0]?.content?.parts[0]?.text || "";
     
-    return responseText.split("\n").map(q => q.trim()).filter(q => q).slice(0, 5);
+    return responseText.split("\n").map(q => q.trim()).filter(q => q).slice(0, 15);
   } catch (error) {
     console.error("Error fetching questions:", error);
     return ["Error fetching questions. Please try again later."];

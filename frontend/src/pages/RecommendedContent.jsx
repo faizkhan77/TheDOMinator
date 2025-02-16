@@ -37,7 +37,7 @@ const RecommendedContent = () => {
         const token = localStorage.getItem("access");
 
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/recommend-teams/", {
+            const response = await axios.get("/api/recommend-teams/", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const RecommendedContent = () => {
         const token = localStorage.getItem("access");
 
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/recommend-users/${teamId}/`, {
+            const response = await axios.get(`/api/recommend-users/${teamId}/`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -120,7 +120,7 @@ const RecommendedContent = () => {
 
         try {
             await axios.post(
-                "http://127.0.0.1:8000/api/invitations/",
+                "/api/invitations/",
                 {
                     recipient_id: selectedUser.user,
                     team_id: teamId,

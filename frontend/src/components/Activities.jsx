@@ -15,13 +15,13 @@ const Activities = () => {
     }, []);
 
     return (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl w-full max-w-3xl mx-auto">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl w-full max-w-3xl mx-auto h-[90vh]">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-50 mb-6 sm:mb-8 text-center">
                 Recent Activities
             </h2>
             {activities.length > 0 ? (
                 <div className="space-y-6 sm:space-y-8 md:space-y-10">
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="h-[60vh] overflow-y-auto space-y-6 sm:space-y-8 md:space-y-10">
                         {activities
                             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
                             .slice(0, 5) // Increased the number of activities to show

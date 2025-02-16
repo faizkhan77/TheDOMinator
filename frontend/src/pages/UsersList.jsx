@@ -22,7 +22,7 @@ const UsersList = () => {
         const token = localStorage.getItem("access");
 
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/users/", {
+            const response = await axios.get("/api/users/", {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const UsersList = () => {
 
         try {
             await axios.post(
-                "http://127.0.0.1:8000/api/invitations/",
+                "/api/invitations/",
                 {
                     recipient_id: selectedUser.id,
                     team_id: teamId,
@@ -79,19 +79,24 @@ const UsersList = () => {
 
     const filteredUsers = users.filter((user) => {
         const query = searchQuery.toLowerCase();
+
         return (
             user.username.toLowerCase().includes(query) ||
-            (user.profile.full_name && user.profile.full_name.toLowerCase().includes(query)) ||
-            (user.profile.role && user.profile.role.toLowerCase().includes(query)) ||
-            (user.profile.skills && user.profile.skills.toLowerCase().includes(query))
+            (user.profile?.full_name && user.profile.full_name.toLowerCase().includes(query)) ||
+            (user.profile?.role && user.profile.role.toLowerCase().includes(query)) ||
+            (user.profile?.skills && user.profile.skills.some(skill => skill.skill_name.toLowerCase().includes(query)))
         );
     });
+
+
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleSidebar = () => {
         setIsSidebarOpen((prevState) => !prevState);
     };
+
+    console.log("users", users)
 
     return (
         <>

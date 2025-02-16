@@ -19,7 +19,7 @@ const MyTeams = () => {
         const userTeamIds = userProfile?.teams || []; // ✅ Extract team IDs array
 
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/teams/", {
+            const response = await axios.get("/api/teams/", {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const MyTeams = () => {
             <div className="md:flex hidden">
                 <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
             </div>
-            <LoggedinNav />         
+            <LoggedinNav />
 
             <div
                 className={`lg:px-8 px-4 py-6 transition-all duration-300 ${isSidebarOpen ? "md:ml-[20%]" : "md:ml-[10%]"}`}

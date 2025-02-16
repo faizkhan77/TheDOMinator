@@ -17,7 +17,7 @@ const Invitations = () => {
         const token = localStorage.getItem("access");
 
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/invitations/", {
+            const response = await axios.get("/api/invitations/", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -41,7 +41,7 @@ const Invitations = () => {
         const updatedTeams = [...(JSON.parse(localStorage.getItem("myTeams")) || []), invite.team];
 
         try {
-            await axios.post(`http://127.0.0.1:8000/api/invitations/${invite.id}/respond/`, {
+            await axios.post(`/api/invitations/${invite.id}/respond/`, {
                 action: "accept"
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -63,7 +63,7 @@ const Invitations = () => {
         const token = localStorage.getItem("access");
 
         try {
-            await axios.post(`http://127.0.0.1:8000/api/invitations/${inviteId}/respond/`, {
+            await axios.post(`/api/invitations/${inviteId}/respond/`, {
                 action: "reject"
             }, {
                 headers: { Authorization: `Bearer ${token}` }
